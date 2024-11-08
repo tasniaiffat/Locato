@@ -1,11 +1,13 @@
-import { View, Text, StyleSheet } from 'react-native'
+import { View, Text, StyleSheet, ScrollView } from 'react-native'
 import React from 'react'
 
 export default function Contribute() {
   return (
-    <View style={styles.container}>
+    <ScrollView 
+      style={styles.container}
+      showsVerticalScrollIndicator={false}>
       <Text>Contribute</Text>
-    </View>
+    </ScrollView>
   )
 }
 

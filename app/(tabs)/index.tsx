@@ -1,25 +1,26 @@
-import { View, Text, StyleSheet, TextInput, Dimensions } from 'react-native'
+import { StyleSheet, ScrollView } from 'react-native'
 import React from 'react'
-import MyHeader from '@/components/MyHeader'
 import { colors } from '@/constants/Colors'
 import SearchDiv from '@/components/SearchDiv'
 import BookmarksDashboard from '@/components/BookmarksDashboard'
+import ServicesNearby from '@/components/ServicesNearby'
 
 export default function Home() {
   return (
-    <View style={styles.container}>
+    <ScrollView 
+      style={styles.container}
+      showsVerticalScrollIndicator={false}>
       <SearchDiv />
+      <ServicesNearby />
       <BookmarksDashboard />
-    </View>
+    </ScrollView>
   )
 }
 
 
 const styles = StyleSheet.create({
   container: {
-    margin: 20,
+    margin: 5,
     flex: 1,
-    // justifyContent: 'center',
-    // alignItems: 'center'
   },
 })
