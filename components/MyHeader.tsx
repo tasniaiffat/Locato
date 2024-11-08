@@ -12,11 +12,11 @@ export default function MyHeader() {
       <Image source={require('../assets/images/LocatoLogo.png')}
           style={styles.logo}/>
 
-      <View style={styles.searchContainer}>
+      {/* <View style={styles.searchContainer}>
         <TextInput placeholder='  Search' 
             style={styles.searchBar}
         />
-      </View>  
+      </View>   */}
 
       <Image source={require('../assets/images/user.png')} 
           style={styles.userImage}
@@ -27,15 +27,16 @@ export default function MyHeader() {
 
 const styles = StyleSheet.create({
   container: {
-    padding:10,
+    marginTop:20,
+    padding:5,
     display: 'flex',
     flexDirection: 'row',
-    justifyContent: 'space-evenly',
+    justifyContent: 'space-between',
     alignItems: 'center'
   },
   logo: {
-    width: 50,
-    height: 50,
+    width: 35,
+    height: 35,
     borderRadius: 25  
   },
   searchContainer: {
@@ -52,8 +53,8 @@ const styles = StyleSheet.create({
     borderColor: Colors.PRIMARY,
   },
   userImage: {
-    width: 50,
-    height: 50,
+    width: 35,
+    height: 35,
     borderRadius: 25
   }
 });

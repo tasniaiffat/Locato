@@ -1,10 +1,16 @@
-import { View, Text } from 'react-native'
+import { View, Text, StyleSheet } from 'react-native'
 import React from 'react'
 
 export default function Contribute() {
   return (
-    <View>
+    <View style={styles.container}>
       <Text>Contribute</Text>
     </View>
   )
 }
+
+const styles = StyleSheet.create({
+  container: {
+    margin: 20,
+  }
+})
