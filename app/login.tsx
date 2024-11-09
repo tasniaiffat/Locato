@@ -7,6 +7,8 @@ import {
   Image,
   ImageBackground,
   TextInput,
+  Platform,
+  Alert,
 } from "react-native";
 import { grey } from "../constants/Colors";
 import Heading from "@/components/Heading";
@@ -14,25 +16,60 @@ import SubHeading from "@/components/MyText";
 import MyLink from "@/components/MyLink";
 import { CheckBox } from "react-native-btr";
 import MyText from "@/components/MyText";
+import api from "./api";
 
 const backgroundimage = { uri: "../assets/images/locato_bg.jpg" };
 const locatologo = { uri: "../assets/images/LocatoLogo-transparent.png" };
 
 const Index = () => {
+  const showAlert = (title: string, message: string) => {
+    if (Platform.OS === "web") {
+      window.alert(`${title}: ${message}`);
+    } else {
+      Alert.alert(title, message);
+    }
+  };
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [rememberMe, setRememberMe] = useState(false);
-
-  const handleLogin = () => {
-    console.log("Email:", email);
-    console.log("Password:", password);
-    console.log("Remember Me:", rememberMe);
-    router.push("/(tabs)/");
-  };
 
   const handleForgotPassword = () => {
     console.log("Forgot Password pressed");
     router.push("/forgot-password");
+  };
+
+  const handleLogin = async () => {
+    console.log("Email:", email);
+    console.log("Password:", password);
+
+    if (!email || !password) {
+      showAlert("Error", "Please fill in all required fields.");
+      console.log("Please fill in all required fields.");
+      return;
+    }
+
+    try {
+      const requestBody = {
+        email,
+        password,
+      };
+
+      const response = await api.post("/auth/login", requestBody);
+
+      if (response.status === 200) {
+        console.log("Successful");
+        showAlert("Success", "User logged in successfully!");
+        router.push("/(tabs)/");
+      } 
+        else {
+        console.log("Login failed");
+        showAlert("Error", "Login failed. Please try again.");
+      }
+    } catch (error) {
+      console.log("Login error");
+      console.error("Login error:", error);
+      showAlert("Login Failed", "Email and Password did not match");
+    }
   };
 
   return (
@@ -47,11 +84,15 @@ const Index = () => {
         </View>
         <View style={styles.rightContainer}>
           <Heading textLabel="Welcome Back" textColor="white" />
-          <SubHeading textLabel="Login to your account" textColor={grey} marginBottom={40} />
+          <SubHeading
+            textLabel="Login to your account"
+            textColor={grey}
+            marginBottom={40}
+          />
           <View style={styles.formContainer}>
             <TextInput
               style={styles.input}
-              placeholder="Enter your email"
+              placeholder="Enter your email*"
               placeholderTextColor={grey}
               value={email}
               keyboardType={"email-address"}
@@ -60,10 +101,10 @@ const Index = () => {
 
             <TextInput
               style={styles.input}
-              placeholder="Enter your password"
+              placeholder="Enter your password*"
               placeholderTextColor={grey}
               secureTextEntry={true}
-              value={password} 
+              value={password}
               onChangeText={setPassword}
             />
 
@@ -145,7 +186,7 @@ const styles = StyleSheet.create({
     color: grey,
   },
   rememberforgot: {
-    width: '100%',
+    width: "100%",
     paddingRight: 5,
     marginVertical: 5,
     alignItems: "flex-end",
