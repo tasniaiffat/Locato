@@ -5,6 +5,9 @@
 
 const tintColorLight = '#0a7ea4';
 const tintColorDark = '#fff';
+export const grey = "#2a323d";
+export const lightblue = 'lightblue'
+export const background = '#375f6f'
 
 export const Colors = {
   light: {

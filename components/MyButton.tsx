@@ -1,27 +1,31 @@
-import { View, Text } from "react-native";
 import React from "react";
-import { TouchableOpacity } from "react-native";
+import { View, Text, TouchableOpacity } from "react-native";
 
-const MyButton = () => {
+type MyButtonProps = {
+  bgColor: string;
+  btnLabel: string;
+  textColor: string;
+  onPress: () => void;
+};
+
+const MyButton: React.FC<MyButtonProps> = ({ bgColor, btnLabel, textColor, onPress }) => {
   return (
-    <View>
-      <TouchableOpacity
-        style={{
-          backgroundColor: "navy",
-          paddingHorizontal: 20,
-          paddingVertical: 15,
-          borderRadius: 10,
-        }}
-      >
-        <Text style={{ 
-            fontSize: 14, 
-            color: "white", 
-            fontWeight: "bold", 
-        }}>
-          MyButton
-        </Text>
-      </TouchableOpacity>
-    </View>
+    <TouchableOpacity
+      onPress={onPress}
+      style={{
+        backgroundColor: bgColor,
+        paddingHorizontal: 10,
+        paddingVertical: 10,
+        borderRadius: 20,
+        alignItems: "center",
+        minWidth: 150,
+        marginVertical: 10,
+      }}
+    >
+      <Text style={{ fontSize: 20, color: textColor, fontWeight: "bold" }}>
+        {btnLabel}
+      </Text>
+    </TouchableOpacity>
   );
 };
 
