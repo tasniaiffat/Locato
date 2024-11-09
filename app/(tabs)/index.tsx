@@ -1,4 +1,4 @@
-import { StyleSheet, ScrollView } from 'react-native'
+import { ImageBackground, StyleSheet, ScrollView } from 'react-native'
 import React from 'react'
 import { colors } from '@/constants/Colors'
 import SearchDiv from '@/components/SearchDiv'
@@ -10,6 +10,7 @@ export default function Home() {
     <ScrollView 
       style={styles.container}
       showsVerticalScrollIndicator={false}>
+      {/* <ImageBackground src=""/> */}
       <SearchDiv />
       <ServicesNearby />
       <BookmarksDashboard />

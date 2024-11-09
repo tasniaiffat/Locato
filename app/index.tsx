@@ -1,45 +1,35 @@
-// import { View, Text } from 'react-native'
-// import React from 'react'
-// import MyHeader from '@/components/MyHeader'
-
-// const Index = () =>  {
-//   return (
-//     <View>
-//       <MyHeader/>
-//       <Text>Home</Text>
-//     </View>
-//   )
-// }
-
-import MyButton from "@/components/MyButton";
-import MyHeader from "@/components/MyHeader";
 import { Link } from "expo-router";
-import LottieView from "lottie-react-native";
-import { StyleSheet, Text, View, Image } from "react-native";
+import { StyleSheet, Text, View, Image, ImageBackground } from "react-native";
+const backgroundimage = {uri: '../assets/images/locato_bg.jpg'};
+const locatologo = {uri: '../assets/images/LocatoLogo-transparent.png'};
 
 const Index = () => {
   return (
+    <ImageBackground 
+    source={backgroundimage} resizeMode="cover" style={styles.background}
+    >
+    
     <View style={styles.container}>
-      <Image source={require('../assets/images/LocatoLogo.png')}
+      <Image source={locatologo}
           style={styles.logo}/>
-      {/* <LottieView
-        source={require('../assets/animations/locato.json')} 
-        autoPlay
-        loop
-        style={styles.animation}
-      /> */}
       <Text style={styles.text}>Welcome to Locato</Text>
-      <Link href={"/(tabs)/"} style={styles.link}>Get Started!</Link>
+      <Link href={"/login"} style={styles.link}>Get Started!</Link>
     </View>
+    </ImageBackground>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#2a323d',
+    backgroundColor: 'transparent',
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  background: {
+    flex: 1,
+    width: '100%',
+    height: '100%',
   },
   text:{
     color: 'white',
@@ -48,10 +38,6 @@ const styles = StyleSheet.create({
   link:{
     color: 'lightblue',
     fontWeight: 'bold',
-  },
-  animation: {
-    width: 300,
-    height: 300,
   },
   logo: {
     width: 200,
