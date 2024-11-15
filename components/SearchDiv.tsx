@@ -2,15 +2,14 @@ import { colors } from '@/constants/Colors'
 import { useState } from 'react';
 import { View, Text, StyleSheet, Dimensions, TextInput } from 'react-native';
 import { useForm, Controller, SubmitHandler, FieldValues } from 'react-hook-form';
-import { useNavigation } from '@react-navigation/native';
+import { router } from 'expo-router';
 
 const SearchDiv = () => {
   const { control, handleSubmit, formState: { errors } } = useForm();
-  const navigation = useNavigation();
 
   const onSubmit: SubmitHandler<FieldValues> = (data) => {
     console.log(data.text);
-    // navigation.navigate('SearchResults', {text: data.text});
+    router.push({ pathname: '/search-results', params: { query : data.text } });
   };
 
 

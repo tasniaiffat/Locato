@@ -15,7 +15,7 @@ import Heading from "@/components/Heading";
 import SubHeading from "@/components/MyText";
 import MyLink from "@/components/MyLink";
 import MyText from "@/components/MyText";
-import api from "./api";
+import api from "@/services/api";
 
 const backgroundimage = { uri: "../assets/images/locato_bg.jpg" };
 const locatologo = { uri: "../assets/images/LocatoLogo-transparent.png" };
