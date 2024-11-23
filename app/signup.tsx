@@ -20,6 +20,7 @@ import SubHeading from "@/components/MyText";
 import MyLink from "@/components/MyLink";
 import MyText from "@/components/MyText";
 import api from "@/services/api";
+import { showAlert } from "@/services/alertUtil";
 
 const backgroundimage:ImageSourcePropType = require("@/assets/images/locato_bg.jpg");
 const locatologo:ImageSourcePropType = require("@/assets/images/LocatoLogo-transparent.png");
@@ -33,14 +34,6 @@ const Index = () => {
   const [zoneId, setZoneId] = useState("1"); // Default zoneId
   const [locationLatitude, setLocationLatitude] = useState("0.0");
   const [locationLongitude, setLocationLongitude] = useState("0.0");
-
-  const showAlert = (title: string, message: string) => {
-    if (Platform.OS === "web") {
-      window.alert(`${title}: ${message}`);
-    } else {
-      Alert.alert(title, message);
-    }
-  };
 
   const handleSignUp = async () => {
     console.log(firstname);
