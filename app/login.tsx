@@ -6,6 +6,7 @@ import {
   View,
   Image,
   ImageBackground,
+  ImageSourcePropType,
   TextInput,
   Platform,
   Alert,
@@ -14,12 +15,11 @@ import { grey } from "../constants/Colors";
 import Heading from "@/components/Heading";
 import SubHeading from "@/components/MyText";
 import MyLink from "@/components/MyLink";
-import { CheckBox } from "react-native-btr";
 import MyText from "@/components/MyText";
 import api from "@/services/api";
 
-const backgroundimage = { uri: "../assets/images/locato_bg.jpg" };
-const locatologo = { uri: "../assets/images/LocatoLogo-transparent.png" };
+const backgroundimage:ImageSourcePropType = require("@/assets/images/locato_bg.jpg");
+const locatologo:ImageSourcePropType = require("@/assets/images/LocatoLogo-transparent.png");
 
 const Index = () => {
   const showAlert = (title: string, message: string) => {

@@ -3,9 +3,10 @@ import MyLink from "@/components/MyLink";
 import SubHeading from "@/components/MyText";
 import { grey, lightblue } from "@/constants/Colors";
 import { Link, router } from "expo-router";
-import { StyleSheet, Text, View, Image, ImageBackground } from "react-native";
-const backgroundimage = { uri: "../assets/images/locato_bg.jpg" };
-const locatologo = { uri: "../assets/images/LocatoLogo-transparent.png" };
+import { StyleSheet, Text, Image, View, ImageBackground, ImageSourcePropType } from "react-native";
+
+const backgroundimage:ImageSourcePropType = require("@/assets/images/locato_bg.jpg");
+const locatologo:ImageSourcePropType =require("@/assets/images/LocatoLogo-transparent.png");
 
 const Index = () => {
   const handlePress = () => {
@@ -27,7 +28,7 @@ const Index = () => {
           onPress={handlePress}
         />
       </View>
-    </ImageBackground>
+   </ImageBackground>
   );
 };
 

@@ -1,19 +1,42 @@
-import { colors } from '@/constants/Colors'
-import { useState } from 'react';
-import { View, Text, StyleSheet, Dimensions, TextInput } from 'react-native';
-import { useForm, Controller, SubmitHandler, FieldValues } from 'react-hook-form';
-import { router } from 'expo-router';
+import { colors } from "@/constants/Colors";
+import { useState } from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Dimensions,
+  TextInput,
+  ImageSourcePropType,
+  ImageBackground,
+} from "react-native";
+import {
+  useForm,
+  Controller,
+  SubmitHandler,
+  FieldValues,
+} from "react-hook-form";
+import { router } from "expo-router";
+
+const backgroundimage: ImageSourcePropType = require("@/assets/images/locato_bg_search.jpg");
 
 const SearchDiv = () => {
-  const { control, handleSubmit, formState: { errors } } = useForm();
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
 
   const onSubmit: SubmitHandler<FieldValues> = (data) => {
     console.log(data.text);
-    router.push({ pathname: '/search-results', params: { query : data.text } });
+    router.push({ pathname: "/search-results", params: { query: data.text } });
   };
 
-
   return (
+    <ImageBackground
+      source={backgroundimage}
+      resizeMode="cover"
+      style={styles.background}
+    >
     <View style={styles.container}>
       <Text style={styles.text}>
         Tell us what you need
@@ -36,20 +59,29 @@ const SearchDiv = () => {
       />
       {errors.text && <Text style={styles.errorText}>This is required.</Text>}
     </View>
+    </ImageBackground>
   );
 };
+
 export default SearchDiv;
 
 const styles = StyleSheet.create({
+  background:{
+    flex: 1,
+    height: "100%",
+    width: Dimensions.get("window").width,
+  },
   container: {
     margin: 20,
-    alignItems: 'center'
+    alignItems: "center",
+    padding: 20,
+    borderRadius: 10,
   },
   text: {
     fontSize: 28,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     color: colors.text,
-    marginVertical: 20
+    marginVertical: 20,
   },
   textInput: {
     marginTop: 20,
@@ -57,7 +89,7 @@ const styles = StyleSheet.create({
     padding: 4,
     borderRadius: 10,
     paddingLeft: 10,
-    width: Dimensions.get('screen').width * 0.85,
+    width: Dimensions.get("screen").width * 0.85,
     height: 50,
     borderColor: colors.icon,
   },
@@ -66,3 +98,6 @@ const styles = StyleSheet.create({
     marginTop: 5,
   },
 });
+
+
+

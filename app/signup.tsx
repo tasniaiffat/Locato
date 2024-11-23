@@ -6,6 +6,7 @@ import {
   View,
   Image,
   ImageBackground,
+  ImageSourcePropType,
   TextInput,
   Platform,
   Alert,
@@ -17,8 +18,8 @@ import MyLink from "@/components/MyLink";
 import MyText from "@/components/MyText";
 import api from "@/services/api";
 
-const backgroundimage = { uri: "../assets/images/locato_bg.jpg" };
-const locatologo = { uri: "../assets/images/LocatoLogo-transparent.png" };
+const backgroundimage:ImageSourcePropType = require("@/assets/images/locato_bg.jpg");
+const locatologo:ImageSourcePropType = require("@/assets/images/LocatoLogo-transparent.png");
 
 const Index = () => {
   const [firstname, setFirstName] = useState("");
