@@ -31,12 +31,9 @@ const BookmarksDashboard = () => {
 }
 export default BookmarksDashboard;
 
-
-
-
-
 const styles = StyleSheet.create({
     container: {
+      backgroundColor: "#dfe4e0"
     },
     text: {
       fontSize: 20,

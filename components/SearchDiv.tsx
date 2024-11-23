@@ -1,4 +1,4 @@
-import { colors } from "@/constants/Colors";
+import { colors, grey, lightblue } from "@/constants/Colors";
 import { useState } from "react";
 import {
   View,
@@ -16,6 +16,7 @@ import {
   FieldValues,
 } from "react-hook-form";
 import { router } from "expo-router";
+import api from "@/services/api";
 
 const backgroundimage: ImageSourcePropType = require("@/assets/images/locato_bg_search.jpg");
 
@@ -49,6 +50,7 @@ const SearchDiv = () => {
           <TextInput
             style={styles.textInput}
             placeholder="Enter the problem you are facing"
+            placeholderTextColor={grey}
             value={value}
             onBlur={onBlur}
             onChangeText={onChange}
@@ -70,6 +72,7 @@ const styles = StyleSheet.create({
     flex: 1,
     height: "100%",
     width: Dimensions.get("window").width,
+    // backgroundColor: lightblue,
   },
   container: {
     margin: 20,
@@ -92,6 +95,7 @@ const styles = StyleSheet.create({
     width: Dimensions.get("screen").width * 0.85,
     height: 50,
     borderColor: colors.icon,
+    backgroundColor: "#dfe4e0"
   },
   errorText: {
     color: colors.errorText,

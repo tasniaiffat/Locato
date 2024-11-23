@@ -10,6 +10,9 @@ import {
   TextInput,
   Platform,
   Alert,
+  Keyboard,
+  TouchableWithoutFeedback,
+  KeyboardAvoidingView,
 } from "react-native";
 import { grey } from "../constants/Colors";
 import Heading from "@/components/Heading";
@@ -84,17 +87,23 @@ const Index = () => {
   };
 
   return (
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      behavior={Platform.OS === "ios" ? "padding" : undefined}
+    >
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
     <ImageBackground
       source={backgroundimage}
       resizeMode="cover"
       style={styles.background}
     >
       <View style={styles.container}>
-        <View style={styles.leftContainer}>
+        {/* <View style={styles.leftContainer}>
           <Image source={locatologo} style={styles.logo} />
-        </View>
+        </View> */}
 
         <View style={styles.rightContainer}>
+          <Image source={locatologo} style={styles.logo} />
           <Heading textLabel="Welcome to Locato" textColor="white" />
           <SubHeading
             textLabel="Create an account"
@@ -172,6 +181,8 @@ const Index = () => {
         </View>
       </View>
     </ImageBackground>
+    </TouchableWithoutFeedback>
+    </KeyboardAvoidingView>
   );
 };
 
@@ -204,8 +215,8 @@ const styles = StyleSheet.create({
     height: "100%",
   },
   logo: {
-    width: 200,
-    height: 200,
+    width: 150,
+    height: 150,
   },
   formContainer: {
     width: "80%",

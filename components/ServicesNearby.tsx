@@ -33,8 +33,11 @@ const ServicesNearby = () => {
 export default ServicesNearby;
 
 const styles = StyleSheet.create({
-  container: {},
+  container: {
+    backgroundColor: "#dfe4e0"
+  },
   text: {
+    // alignContent: "center",
     fontSize: 20,
     fontWeight: "bold",
     color: colors.text,

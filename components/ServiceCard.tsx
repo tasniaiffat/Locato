@@ -12,7 +12,7 @@ const cardStyles = StyleSheet.create({
     container: {
         width: 150,
         height: 170,
-        backgroundColor: colors.tint,
+        backgroundColor: "#a0c3be",
         margin: 10,
         borderRadius: 20,
         padding: 10,

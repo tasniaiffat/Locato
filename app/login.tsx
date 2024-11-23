@@ -10,16 +10,19 @@ import {
   TextInput,
   Platform,
   Alert,
+  Keyboard,
+  TouchableWithoutFeedback,
+  KeyboardAvoidingView,
 } from "react-native";
-import { grey } from "../constants/Colors";
+import { grey, lightblue } from "../constants/Colors";
 import Heading from "@/components/Heading";
 import SubHeading from "@/components/MyText";
 import MyLink from "@/components/MyLink";
 import MyText from "@/components/MyText";
 import api from "@/services/api";
 
-const backgroundimage:ImageSourcePropType = require("@/assets/images/locato_bg.jpg");
-const locatologo:ImageSourcePropType = require("@/assets/images/LocatoLogo-transparent.png");
+const backgroundimage: ImageSourcePropType = require("@/assets/images/locato_bg.jpg");
+const locatologo: ImageSourcePropType = require("@/assets/images/LocatoLogo-transparent.png");
 
 const Index = () => {
   const showAlert = (title: string, message: string) => {
@@ -34,112 +37,81 @@ const Index = () => {
   const [password, setPassword] = useState("");
 
   const handleForgotPassword = () => {
-    console.log("Forgot Password pressed");
     router.push("/forgot-password");
   };
 
   const handleLogin = async () => {
-    console.log("Email:", email);
-    console.log("Password:", password);
-
     if (!email || !password) {
       showAlert("Error", "Please fill in all required fields.");
-      console.log("Please fill in all required fields.");
       return;
     }
 
     try {
-      const requestBody = {
-        email,
-        password,
-      };
-
-      const response = await api.post("/auth/login", requestBody);
-
+      const response = await api.post("/auth/login", { email, password });
       if (response.status === 200) {
-        console.log("Successful");
         showAlert("Success", "User logged in successfully!");
         router.push("/(tabs)/");
-      } 
-        else {
-        console.log("Login failed");
+      } else {
         showAlert("Error", "Login failed. Please try again.");
       }
     } catch (error) {
-      console.log("Login error");
-      console.error("Login error:", error);
       showAlert("Login Failed", "Email and Password did not match");
     }
   };
 
   return (
-    <ImageBackground
-      source={backgroundimage}
-      resizeMode="cover"
-      style={styles.background}
+    // Dismiss keyboard on tap outside
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      behavior={Platform.OS === "ios" ? "padding" : undefined}
     >
-      <View style={styles.container}>
-        <View style={styles.leftContainer}>
-          <Image source={locatologo} style={styles.logo} />
-        </View>
-        <View style={styles.rightContainer}>
-          <Heading textLabel="Welcome Back" textColor="white" />
-          <SubHeading
-            textLabel="Login to your account"
-            textColor={grey}
-            marginBottom={40}
-          />
-          <View style={styles.formContainer}>
-            <TextInput
-              style={styles.input}
-              placeholder="Enter your email*"
-              placeholderTextColor={grey}
-              value={email}
-              keyboardType={"email-address"}
-              onChangeText={setEmail}
-            />
-
-            <TextInput
-              style={styles.input}
-              placeholder="Enter your password*"
-              placeholderTextColor={grey}
-              secureTextEntry={true}
-              value={password}
-              onChangeText={setPassword}
-            />
-
-            <View style={styles.rememberforgot}>
-              <MyLink
-                textLabel="Forgot Password?"
-                textColor="lightblue"
-                fontWeight="normal"
-                onPress={handleForgotPassword}
-              />
-            </View>
-
-            <MyButton
-              bgColor={grey}
-              textColor="white"
-              btnLabel="Login"
-              onPress={handleLogin}
-            />
-
-            <View style={styles.signupcta}>
-              <MyText
-                textLabel="Don't have an account? "
-                textColor="white"
-                fontWeight="normal"
-              />
-              <MyLink
-                textLabel="Sign Up"
-                textColor="white"
-                onPress={() => router.push("/signup")}
-              />
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <ImageBackground source={backgroundimage} resizeMode="cover" style={styles.background}>
+          <View style={styles.container}>
+            <View style={styles.rightContainer}>
+              <Image source={locatologo} style={styles.logo} />
+              <Heading textLabel="Welcome Back" textColor="white" />
+              <SubHeading textLabel="Login to your account" textColor={grey} />
+              <View style={styles.formContainer}>
+                <TextInput
+                  style={styles.input}
+                  placeholder="Enter your email*"
+                  placeholderTextColor={grey}
+                  value={email}
+                  keyboardType={"email-address"}
+                  onChangeText={setEmail}
+                />
+                <TextInput
+                  style={styles.input}
+                  placeholder="Enter your password*"
+                  placeholderTextColor={grey}
+                  secureTextEntry={true}
+                  value={password}
+                  onChangeText={setPassword}
+                />
+                <View style={styles.rememberforgot}>
+                  <MyLink
+                    textLabel="Forgot Password?"
+                    textColor="lightblue"
+                    fontWeight="normal"
+                    onPress={handleForgotPassword}
+                  />
+                </View>
+                <MyButton bgColor={lightblue} textColor={grey} btnLabel="Login" onPress={handleLogin} />
+                <View style={styles.signupcta}>
+                  <MyText textLabel="Don't have an account? " textColor="white" fontWeight="normal" />
+                  <MyLink
+                    textLabel="Sign Up"
+                    textColor="white"
+                    onPress={() => router.push("/signup")}
+                  />
+                </View>
+              </View>
             </View>
           </View>
-        </View>
-      </View>
-    </ImageBackground>
+        </ImageBackground>
+      </TouchableWithoutFeedback>
+    </KeyboardAvoidingView>
   );
 };
 
@@ -149,12 +121,6 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: "row",
     justifyContent: "space-between",
-  },
-  leftContainer: {
-    flex: 1,
-    backgroundColor: "transparent",
-    justifyContent: "center",
-    alignItems: "center",
   },
   rightContainer: {
     flex: 2,
@@ -168,12 +134,12 @@ const styles = StyleSheet.create({
     height: "100%",
   },
   logo: {
-    width: 200,
-    height: 200,
+    width: 150,
+    height: 150,
     borderRadius: 25,
   },
   formContainer: {
-    width: "60%",
+    width: "80%",
     alignItems: "center",
   },
   input: {
@@ -191,12 +157,7 @@ const styles = StyleSheet.create({
     marginVertical: 5,
     alignItems: "flex-end",
   },
-  forgotPasswordLink: {
-    color: "lightblue",
-    fontWeight: "bold",
-  },
   signupcta: {
-    flex: 1,
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
