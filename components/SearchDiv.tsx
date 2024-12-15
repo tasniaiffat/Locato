@@ -20,6 +20,7 @@ import {
 import { router } from "expo-router";
 import api from "@/services/api";
 import { showAlert } from "@/services/alertUtil";
+import { CoordinateType } from "@/types/CoordinateType";
 
 const backgroundimage: ImageSourcePropType = require("@/assets/images/locato_bg_search.jpg");
 
@@ -43,17 +44,46 @@ const SearchDiv = () => {
       const requestBody = {
         requestText: data,
       };
-
+      
+      router.push('../map');
       const response = await api.post("/assistance", requestBody);
 
-      if (response.status === 200) {
-        console.log("Request successful");
-        setResponseData(response.data); 
-        showAlert("Success", "Assistance request submitted successfully!");
-      } else {
+      if (response.status !== 200) {
         console.log("Request failed");
         showAlert("Error", "Failed to submit assistance request. Please try again.");
+        throw new Error("Request failed");
       }
+
+      console.log(response.data);
+
+      const specialists = response.data.content;
+
+      const specialistsCoordinates: CoordinateType[] = specialists.map((specialist: any) => {
+        return { 
+          latitude: specialist.locationLatitude,
+          longitude: specialist.locationLongitude,
+        }
+      });
+
+
+
+      console.log("Specialists coordinates", specialistsCoordinates);
+
+      const encodedCoordinates = encodeURIComponent(JSON.stringify(specialistsCoordinates));
+      console.log("Encoded coordinates before push", encodedCoordinates);
+      
+
+      router.push(`../map?coordinatesParam=${encodedCoordinates}`);
+      
+
+      // if (response.status === 200) {
+      //   console.log("Request successful");
+      //   setResponseData(response.data); 
+      //   showAlert("Success", "Assistance request submitted successfully!");
+      // } else {
+      //   console.log("Request failed");
+      //   showAlert("Error", "Failed to submit assistance request. Please try again.");
+      // }
     } catch (error) {
       console.log("Error in request submission");
       console.error("Error:", error);
@@ -89,7 +119,7 @@ const SearchDiv = () => {
         {errors.text && <Text style={styles.errorText}>This is required.</Text>}
 
         {/* Modal for displaying response data */}
-        <Modal
+        {/* <Modal
           animationType="slide"
           transparent={true}
           visible={isModalVisible}
@@ -123,8 +153,6 @@ const SearchDiv = () => {
               ) : (
                 <Text>No results found.</Text>
               )}
-
-              {/* Close button */}
               <TouchableOpacity
                 style={styles.closeButton}
                 onPress={() => setIsModalVisible(false)}
@@ -133,7 +161,7 @@ const SearchDiv = () => {
               </TouchableOpacity>
             </View>
           </View>
-        </Modal>
+        </Modal> */}
       </View>
     </ImageBackground>
   );
