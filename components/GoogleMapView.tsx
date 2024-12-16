@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { Dimensions, StyleSheet } from "react-native";
 import { View, Text } from "react-native";
 import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
@@ -11,10 +11,12 @@ import { getLocationPermission } from "@/services/getLocationPermission";
 import { CoordinateType } from "@/types/CoordinateType";
 
 const GoogleMapView = ({
-  specialistLocations: specialistLocation,
+  specialistLocations,
+  setSpecialistLocation,
   style
 }: {
   specialistLocations: CoordinateType[];
+  setSpecialistLocation: Dispatch<SetStateAction<CoordinateType[]>>;
   style?: object;
 }) => {
   const [location, setLocation] = useState<Location.LocationObject | null>(
@@ -38,7 +40,8 @@ const GoogleMapView = ({
       });
   }, []);
 
-  const specialistLocations = [{ latitude: 23.765844, longitude: 90.35836 }];
+  
+  // const specialistLocations = [{ latitude: 23.765844, longitude: 90.35836 }];
 
   const [mapRegion, setMapRegion] = useState({
     latitude: 0,
@@ -56,8 +59,9 @@ const GoogleMapView = ({
       latitudeDelta: 0.0922,
       longitudeDelta: 0.0421,
     });
+    setSpecialistLocation([{ latitude: 23.765844, longitude: 90.35836 }]);
   }, [location]);
-  console.log("location", location);
+  // console.log("location", location);
 
   return (
     <View style={{ ...styles.container, ...style }}>
@@ -71,7 +75,7 @@ const GoogleMapView = ({
             style={styles.map}>
             <Marker title="You" coordinate={mapRegion} />
 
-            {specialistLocations &&
+            {/* {specialistLocations &&
               specialistLocations.map((location, index) => (
                 <Marker
                   key={index}
@@ -79,7 +83,8 @@ const GoogleMapView = ({
                   coordinate={location}
                   pinColor="blue"
                 />
-              ))}
+              ))} */}
+              <Marker title="Specialist" coordinate={{ latitude: 23.765844, longitude: 90.35836 }} pinColor="blue" />
           </MapView>
         </TapGestureHandler>
       </GestureHandlerRootView>
@@ -91,11 +96,12 @@ export default GoogleMapView;
 const styles = StyleSheet.create({
   container: {
     width: Dimensions.get("screen").width,
-    height: Dimensions.get("screen").height*0.5,
+    minHeight: Dimensions.get("screen").height*0.5,
+    flex: 1,
   },
   map: {
     width: Dimensions.get("screen").width,
-    height: Dimensions.get("screen").height,
+    flex: 1,
     alignSelf: "center",
   },
   bottom_container: {

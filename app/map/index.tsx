@@ -69,7 +69,7 @@ const MapPage = () => {
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-        <GoogleMapView specialistLocations={specialistLocations} />
+        <GoogleMapView specialistLocations={specialistLocations} setSpecialistLocation={setSpecialistLocation} />
         <BottomSheet />
     </GestureHandlerRootView>
   );

@@ -20,7 +20,6 @@ function BottomSheetComponent({ style } : {
   }, []);
 
   return (
-      <GestureHandlerRootView style={styles.container}>
         <BottomSheet
           enableOverDrag
           style={{elevation: 50}}
@@ -32,7 +31,6 @@ function BottomSheetComponent({ style } : {
             <Text>Awesome 🎉</Text>
           </BottomSheetView>
         </BottomSheet>
-      </GestureHandlerRootView>
   );
 }
 
@@ -43,6 +41,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: 'grey',
+    // position: 'absolute',
   },
   contentContainer: {
     flex: 1,
