@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import MyButton from "@/components/MyButton";
 import { router } from "expo-router";
 import {
@@ -21,11 +21,21 @@ import MyLink from "@/components/MyLink";
 import MyText from "@/components/MyText";
 import api from "@/services/api";
 import { showAlert } from "@/services/alertUtil";
+import * as SecureStore from "expo-secure-store";
 
 const backgroundimage: ImageSourcePropType = require("@/assets/images/locato_bg.jpg");
 const locatologo: ImageSourcePropType = require("@/assets/images/LocatoLogo-transparent.png");
 
 const Index = () => {
+
+  useEffect(() => {
+    SecureStore.getItemAsync("jwt")
+    .then((jwt) => {
+      if (jwt) {
+        router.push("/(tabs)/");
+      }
+    });
+  },[]);
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -44,6 +54,10 @@ const Index = () => {
       const response = await api.post("/auth/login", { email, password });
       if (response.status === 200) {
         showAlert("Success", "User logged in successfully!");
+        console.log(response.data?.jwt);
+        if (response.data?.jwt) {
+          await SecureStore.setItemAsync("jwt", response.data.jwt);
+        }
         router.push("/(tabs)/");
       } else {
         showAlert("Error", "Login failed. Please try again.");

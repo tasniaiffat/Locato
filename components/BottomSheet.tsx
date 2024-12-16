@@ -41,7 +41,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: 'grey',
-    // position: 'absolute',
   },
   contentContainer: {
     flex: 1,

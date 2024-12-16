@@ -76,15 +76,3 @@ const MapPage = () => {
 };
 export default MapPage;
 
-
-const styles = StyleSheet.create({
-  bottomSheet: {
-    position: 'absolute',
-    bottom: 20,
-    width: '100%',
-    elevation: 50,
-  },
-  mapContainer: {
-    flex: 1,
-  }
-});
