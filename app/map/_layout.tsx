@@ -4,7 +4,7 @@ const MapLayout = () => {
   return (
     <Stack 
       screenOptions={{
-        headerShown: true, 
+        headerShown: false, 
         headerTitle: 'Showing Results',
         gestureEnabled: true,
         headerStyle: {

@@ -1,56 +1,90 @@
+import BottomSheet from "@/components/BottomSheet";
 import GoogleMapView from "@/components/GoogleMapView";
-import { LocationContext } from "@/contexts/LocationContext";
-import { SpecialistLocationContext } from "@/contexts/SpecialistLocationContext";
-import { getLocationPermission } from "@/services/getLocationPermission";
 import { CoordinateType } from "@/types/CoordinateType";
-import * as Location from "expo-location";
-import { useLocalSearchParams, useSearchParams } from "expo-router/build/hooks";
+import { useLocalSearchParams } from "expo-router/build/hooks";
 import { useEffect, useState } from "react";
-import { View } from "react-native";
+import { StyleSheet, View } from "react-native";
+import api from "@/services/api";
+import { showAlert } from "@/services/alertUtil";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+
+const submitAssistanceRequest = async (data: string) => {
+  console.log("Submitting request");
+
+  try {
+    const requestBody = {
+      requestText: data,
+    };
+
+    const response = await api.post("/assistance", requestBody);
+
+    if (response.status !== 200) {
+      console.log("Request failed");
+      showAlert(
+        "Error",
+        "Failed to submit assistance request. Please try again."
+      );
+      throw new Error("Request failed");
+    }
+
+    console.log("Data: ", response.data);
+
+    // setSpecialists(response.data.content);
+    const specialists = response.data.content;
+
+    const specialistsCoordinates: CoordinateType[] = specialists.map(
+      (specialist: any) => {
+        return {
+          latitude: specialist.locationLatitude,
+          longitude: specialist.locationLongitude,
+        };
+      }
+    );
+    console.log("Specialists coordinates", specialistsCoordinates);
+    // setSpecialistLocation(specialistsCoordinates);
+    return { specialistList: specialists, specialistsCoordinates };
+  } catch (error) {
+    console.log("Error in request submission");
+    console.error("Error:", error);
+    showAlert("Error", "An error occurred. Please try again.");
+  }
+};
 
 const MapPage = () => {
-  const [location, setLocation] = useState<Location.LocationObject | null>(
-    null
-  );
-  const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const { query } = useLocalSearchParams();
+  console.log("Query: ", query);
 
-  const { coordinatesParam } = useLocalSearchParams();
-  const [specialistLocation, setSpecialistLocation] = useState<CoordinateType[]>([]);
+  const [specialists, setSpecialists] = useState([]);
+  const [specialistLocations, setSpecialistLocation] = useState<
+    CoordinateType[]
+  >([]);
 
-  console.log("coordinatesParam", coordinatesParam);
-    
   useEffect(() => {
-    if (coordinatesParam && typeof coordinatesParam === "string") {
-      const decodedCoordinates = JSON.parse(coordinatesParam);
-      console.log("decodedCoordinates", decodedCoordinates);
-      
-    }
-  })
-  
-  useEffect(() => {
-    getLocationPermission()
-      .then((status) => {
-        if (status !== "granted") {
-          setErrorMsg("Permission to access location was denied");
-          return;
-        }
-      })
-      .then(async () => {
-        let location = await Location.getCurrentPositionAsync({});
-        setLocation(location);
-      });
-
+    (async () => {
+      const data = await submitAssistanceRequest(query as string);
+      setSpecialists(data?.specialistList || []);
+      setSpecialistLocation(data?.specialistsCoordinates || []);
+    })();
   }, []);
 
   return (
-    <View>
-      <SpecialistLocationContext.Provider value={{locations: specialistLocation, setLocations: setSpecialistLocation}}>
-        <LocationContext.Provider value={{ location, setLocation }}>
-          <GoogleMapView />
-        </LocationContext.Provider>
-      </SpecialistLocationContext.Provider>
-    </View>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+        <GoogleMapView specialistLocations={specialistLocations} />
+        <BottomSheet />
+    </GestureHandlerRootView>
   );
 };
 export default MapPage;
 
+
+const styles = StyleSheet.create({
+  bottomSheet: {
+    position: 'absolute',
+    bottom: 20,
+    width: '100%',
+    elevation: 50,
+  },
+  mapContainer: {
+    flex: 1,
+  }
+});
