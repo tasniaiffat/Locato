@@ -9,20 +9,29 @@ import {
 import * as Location from "expo-location";
 import { getLocationPermission } from "@/services/getLocationPermission";
 import { CoordinateType } from "@/types/CoordinateType";
+import useSelectedSpecialist from "@/hooks/useSelectedSpecialist";
+import { SpecialistType } from "@/types/SpecialistType";
 
 const GoogleMapView = ({
-  specialistLocations,
-  setSpecialistLocation,
+  specialists,
+  setSpecialists,
   style
 }: {
-  specialistLocations: CoordinateType[];
-  setSpecialistLocation: Dispatch<SetStateAction<CoordinateType[]>>;
+  specialists: SpecialistType[];
+  setSpecialists: Dispatch<SetStateAction<SpecialistType[]>>;
   style?: object;
 }) => {
-  const [location, setLocation] = useState<Location.LocationObject | null>(
-    null
-  );
+  const [location, setLocation] = useState<Location.LocationObject | null>(null);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [mapRegion, setMapRegion] = useState({
+    latitude: 0,
+    longitude: 0,
+    latitudeDelta: 0.0922,
+    longitudeDelta: 0.0421,
+  });
+  
+  const {selectedSpecialist, setSelectedSpecialist} = useSelectedSpecialist();
+  
 
   useEffect(() => {
     getLocationPermission()
@@ -40,15 +49,7 @@ const GoogleMapView = ({
       });
   }, []);
 
-  
-  // const specialistLocations = [{ latitude: 23.765844, longitude: 90.35836 }];
 
-  const [mapRegion, setMapRegion] = useState({
-    latitude: 0,
-    longitude: 0,
-    latitudeDelta: 0.0922,
-    longitudeDelta: 0.0421,
-  });
 
   useEffect(() => {
     if (!location) return;
@@ -59,7 +60,6 @@ const GoogleMapView = ({
       latitudeDelta: 0.0922,
       longitudeDelta: 0.0421,
     });
-    setSpecialistLocation([{ latitude: 23.765844, longitude: 90.35836 }]);
   }, [location]);
   // console.log("location", location);
 
@@ -73,18 +73,19 @@ const GoogleMapView = ({
             showsMyLocationButton={true}
             region={mapRegion}
             style={styles.map}>
-            <Marker title="You" coordinate={mapRegion} />
+            <Marker 
+              title="You" 
+              coordinate={mapRegion} />
 
-            {/* {specialistLocations &&
-              specialistLocations.map((location, index) => (
-                <Marker
-                  key={index}
-                  title="Specialist"
-                  coordinate={location}
-                  pinColor="blue"
-                />
-              ))} */}
-              <Marker title="Specialist" coordinate={{ latitude: 23.765844, longitude: 90.35836 }} pinColor="blue" />
+            { specialists && specialists.map((specialist, index) => (
+              <Marker 
+                key={index}
+                title={specialist.name}
+                coordinate={{ latitude: specialist.locationLatitude, longitude: specialist.locationLongitude }} 
+                onSelect={() => setSelectedSpecialist(specialist)}
+                onDeselect={() => setSelectedSpecialist(null)}
+                pinColor="blue" />
+            ))}
           </MapView>
         </TapGestureHandler>
       </GestureHandlerRootView>

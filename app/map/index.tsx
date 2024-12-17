@@ -7,6 +7,8 @@ import { StyleSheet, View } from "react-native";
 import api from "@/services/api";
 import { showAlert } from "@/services/alertUtil";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { SpecialistType } from "@/types/SpecialistType";
+import { SelectedSpecialistContext } from "@/contexts/SelectedSpecialistContext";
 
 const submitAssistanceRequest = async (data: string) => {
   console.log("Submitting request");
@@ -30,7 +32,7 @@ const submitAssistanceRequest = async (data: string) => {
     console.log("Data: ", response.data);
 
     // setSpecialists(response.data.content);
-    const specialists = response.data.content;
+    const specialists: SpecialistType[] = response.data.content;
 
     const specialistsCoordinates: CoordinateType[] = specialists.map(
       (specialist: any) => {
@@ -52,26 +54,29 @@ const submitAssistanceRequest = async (data: string) => {
 
 const MapPage = () => {
   const { query } = useLocalSearchParams();
-  console.log("Query: ", query);
+  // console.log("Query: ", query);
 
-  const [specialists, setSpecialists] = useState([]);
-  const [specialistLocations, setSpecialistLocation] = useState<
-    CoordinateType[]
-  >([]);
+  const [specialists, setSpecialists] = useState<SpecialistType[]>([
+    {"active": true, "certifications": "string", "createdAt": "2024-11-21T19:55:41.279824", "email": "miraj@gmail.com", "experienceYears": 0, "id": 25, "locationLatitude": 23.765844, "locationLongitude": 90.35836, "name": "Miraj", "rating": 0, "role": "ROLE_SERVICE_PROVIDER", "serviceRate": 0, "specialties": [], "updatedAt": "2024-11-21T19:55:41.279824", "zone": {}},
+    {"active": true, "certifications": "string", "createdAt": "2024-11-21T19:55:41.279824", "email": "tahsinj@gmail.com", "experienceYears": 0, "id": 25, "locationLatitude": 23.763844, "locationLongitude": 90.35936, "name": "Tahsin", "rating": 0, "role": "ROLE_SERVICE_PROVIDER", "serviceRate": 0, "specialties": [], "updatedAt": "2024-11-21T19:55:41.279824", "zone": {}}
+  ]);
+  const [selectedSpecialist, setSelectedSpecialist] = useState<SpecialistType | null>(null);
+  
 
   useEffect(() => {
     (async () => {
       const data = await submitAssistanceRequest(query as string);
-      setSpecialists(data?.specialistList || []);
-      setSpecialistLocation(data?.specialistsCoordinates || []);
+      // setSpecialists(data?.specialistList || []);
     })();
   }, []);
 
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
-        <GoogleMapView specialistLocations={specialistLocations} setSpecialistLocation={setSpecialistLocation} />
-        <BottomSheet />
-    </GestureHandlerRootView>
+    <SelectedSpecialistContext.Provider value={{selectedSpecialist, setSelectedSpecialist}}>
+      <GestureHandlerRootView style={{ flex: 1 }}>
+          <GoogleMapView specialists={specialists} setSpecialists={setSpecialists} />
+          <BottomSheet />
+      </GestureHandlerRootView>
+    </SelectedSpecialistContext.Provider>
   );
 };
 export default MapPage;

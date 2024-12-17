@@ -3,6 +3,11 @@ import { StyleSheet, Text } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import BottomSheet, { BottomSheetView } from '@gorhom/bottom-sheet';
 import { View } from "react-native";
+import useSelectedSpecialist from "@/hooks/useSelectedSpecialist";
+
+const handleSheetChanges = (index: number) => {
+  console.log('handleSheetChanges', index);
+}
 
 function BottomSheetComponent({ style } : {
   style?: object;
@@ -14,10 +19,8 @@ function BottomSheetComponent({ style } : {
     bottomSheetRef.current?.expand();
   },[]);
 
-  // callbacks
-  const handleSheetChanges = useCallback((index: number) => {
-    console.log('handleSheetChanges', index);
-  }, []);
+  const { selectedSpecialist, setSelectedSpecialist } = useSelectedSpecialist();
+
 
   return (
         <BottomSheet
@@ -28,7 +31,8 @@ function BottomSheetComponent({ style } : {
           onChange={handleSheetChanges}
         >
           <BottomSheetView style={styles.contentContainer}>
-            <Text>Awesome 🎉</Text>
+            {selectedSpecialist && <Text>{selectedSpecialist.name}</Text>}
+            {!selectedSpecialist && <Text>Showing specialists nearby</Text>}
           </BottomSheetView>
         </BottomSheet>
   );
