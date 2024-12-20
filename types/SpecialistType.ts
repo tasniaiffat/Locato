@@ -1,3 +1,9 @@
+export enum SpecialistRole {
+    ROLE_SERVICE_PROVIDER = "ROLE_SERVICE_PROVIDER",
+    ROLE_USER = "ROLE_USER",
+}
+
+
 export type SpecialistType = {
     active: boolean;
     certifications: string;

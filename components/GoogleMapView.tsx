@@ -46,6 +46,15 @@ const GoogleMapView = ({
         console.log("location", location);
 
         setLocation(location);
+        setMapRegion({
+          latitude: location.coords.latitude,
+          longitude: location.coords.longitude,
+          latitudeDelta: 0.0922,
+          longitudeDelta: 0.0421,
+        })
+        console.log("Specialists");
+        
+        specialists && specialists.forEach( specialist => console.log(specialist.locationLatitude, specialist.locationLongitude));
       });
   }, []);
 
@@ -53,6 +62,7 @@ const GoogleMapView = ({
 
   useEffect(() => {
     if (!location) return;
+    
 
     setMapRegion({
       latitude: location.coords.latitude,
@@ -60,6 +70,8 @@ const GoogleMapView = ({
       latitudeDelta: 0.0922,
       longitudeDelta: 0.0421,
     });
+    console.log("Map region", mapRegion);
+    
   }, [location]);
   // console.log("location", location);
 
@@ -77,7 +89,7 @@ const GoogleMapView = ({
               title="You" 
               coordinate={mapRegion} />
 
-            { specialists && specialists.map((specialist, index) => (
+            {specialists && specialists.map((specialist, index) => (
               <Marker 
                 key={index}
                 title={specialist.name}

@@ -1,20 +1,28 @@
-import { useCallback, useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { StyleSheet, Text } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import BottomSheet, { BottomSheetView } from '@gorhom/bottom-sheet';
 import { View } from "react-native";
 import useSelectedSpecialist from "@/hooks/useSelectedSpecialist";
+import SheetCollapsed from "@/screens/SheetCollapsed";
+import SheetMiddle from "@/screens/SheetMiddle";
+import SheetExpanded from "@/screens/SheetExpanded";
 
-const handleSheetChanges = (index: number) => {
-  console.log('handleSheetChanges', index);
-}
+
+
 
 function BottomSheetComponent({ style } : {
   style?: object;
 }) {
   const bottomSheetRef = useRef<BottomSheet>(null);
   const snapPoints = ['20%', '40%', '100%'];
-
+  const [index, setIndex] = useState(0);
+  
+  const handleSheetChanges = (index: number) => {
+    console.log('handleSheetChanges', index);
+    setIndex(index);
+    
+  }
   useEffect(() => {
     bottomSheetRef.current?.expand();
   },[]);
@@ -31,8 +39,17 @@ function BottomSheetComponent({ style } : {
           onChange={handleSheetChanges}
         >
           <BottomSheetView style={styles.contentContainer}>
-            {selectedSpecialist && <Text>{selectedSpecialist.name}</Text>}
-            {!selectedSpecialist && <Text>Showing specialists nearby</Text>}
+            {
+              index === 0 ? 
+                <SheetCollapsed />
+              : index === 1 ?
+                <SheetMiddle />
+              : index === 2 ?
+                <SheetExpanded />
+              : null
+            }
+            {/* {selectedSpecialist && <Text>{selectedSpecialist.name}</Text>}
+            {!selectedSpecialist && <Text>Showing specialists nearby</Text>} */}
           </BottomSheetView>
         </BottomSheet>
   );
