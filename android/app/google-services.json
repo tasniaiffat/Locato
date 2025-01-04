@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "618275479206",
+    "project_id": "locato-37488",
+    "storage_bucket": "locato-37488.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:618275479206:android:ecf880c3f8b68a41b9de67",
+        "android_client_info": {
+          "package_name": "com.jamal_uddin.locato"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBicrJS3_RyRgh6GREKNKqBEgrs9q6RXJU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
