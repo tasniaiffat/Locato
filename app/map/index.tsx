@@ -11,6 +11,7 @@ import { SpecialistType } from "@/types/SpecialistType";
 import { SelectedSpecialistContext } from "@/contexts/SelectedSpecialistContext";
 import { getLocationPermission } from "@/services/getLocationPermission";
 import * as Location from "expo-location";
+import useSelectedSpecialist from "@/hooks/useSelectedSpecialist";
 
 
 const submitAssistanceRequest = async (data: string) => {
@@ -63,7 +64,7 @@ const MapPage = () => {
     {"active": true, "certifications": "string", "createdAt": "2024-11-21T19:55:41.279824", "email": "miraj@gmail.com", "experienceYears": 0, "id": 25, "locationLatitude": 23.765844, "locationLongitude": 90.35836, "name": "Miraj", "rating": 3, "role": "ROLE_SERVICE_PROVIDER", "serviceRate": 0, "specialties": [], "updatedAt": "2024-11-21T19:55:41.279824", "zone": {}},
     {"active": true, "certifications": "string", "createdAt": "2024-11-21T19:55:41.279824", "email": "tahsinj@gmail.com", "experienceYears": 0, "id": 25, "locationLatitude": 23.763844, "locationLongitude": 90.35936, "name": "Tahsin", "rating": 4, "role": "ROLE_SERVICE_PROVIDER", "serviceRate": 0, "specialties": [], "updatedAt": "2024-11-21T19:55:41.279824", "zone": {}}
   ]);
-  const [selectedSpecialist, setSelectedSpecialist] = useState<SpecialistType | null>(null);
+  const { selectedSpecialist, setSelectedSpecialist } = useSelectedSpecialist();
 
   const [location, setLocation] = useState<Location.LocationObject | null>(null);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
@@ -106,20 +107,18 @@ const MapPage = () => {
   }, []);
 
   return (
-    <SelectedSpecialistContext.Provider value={{selectedSpecialist, setSelectedSpecialist}}>
-      <GestureHandlerRootView style={{ flex: 1 }}>
-          <GoogleMapView 
-            specialists={specialists} 
-            setSpecialists={setSpecialists}
-            location={location}
-            setLocation={setLocation}
-            errorMsg = {errorMsg}
-            setErrorMsg = {setErrorMsg}
-            mapRegion = {mapRegion}
-            setMapRegion = {setMapRegion} />
-          <BottomSheet />
-      </GestureHandlerRootView>
-    </SelectedSpecialistContext.Provider>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+        <GoogleMapView 
+          specialists={specialists} 
+          setSpecialists={setSpecialists}
+          location={location}
+          setLocation={setLocation}
+          errorMsg = {errorMsg}
+          setErrorMsg = {setErrorMsg}
+          mapRegion = {mapRegion}
+          setMapRegion = {setMapRegion} />
+        <BottomSheet />
+    </GestureHandlerRootView>
   );
 };
 export default MapPage;

@@ -1,4 +1,4 @@
-import { createContext, Dispatch, SetStateAction } from "react";
+import { createContext, Dispatch, SetStateAction, useState } from "react";
 import { SpecialistType } from "@/types/SpecialistType";
 
 export const SelectedSpecialistContext = createContext<{

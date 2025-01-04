@@ -27,7 +27,6 @@ function BottomSheetComponent({ style } : {
     bottomSheetRef.current?.expand();
   },[]);
 
-  const { selectedSpecialist, setSelectedSpecialist } = useSelectedSpecialist();
 
 
   return (

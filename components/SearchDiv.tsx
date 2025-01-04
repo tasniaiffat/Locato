@@ -18,9 +18,6 @@ import {
   FieldValues,
 } from "react-hook-form";
 import { router } from "expo-router";
-import api from "@/services/api";
-import { showAlert } from "@/services/alertUtil";
-import { CoordinateType } from "@/types/CoordinateType";
 
 const backgroundImage: ImageSourcePropType = require("@/assets/images/locato_bg_search.jpg");
 

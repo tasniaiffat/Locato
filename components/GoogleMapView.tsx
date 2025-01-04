@@ -51,7 +51,7 @@ const GoogleMapView = ({
   //   longitudeDelta: 0.0421,
   // });
   
-  const {selectedSpecialist, setSelectedSpecialist} = useSelectedSpecialist();
+  const {selectedSpecialist, setSelectedSpecialist } = useSelectedSpecialist();
   
 
   // useEffect(() => {
@@ -118,17 +118,23 @@ const GoogleMapView = ({
             showsMyLocationButton={true}
             region={mapRegion}
             style={styles.map}>
-            <Marker 
+            {/* <Marker 
               title="You" 
-              coordinate={mapRegion} />
+              coordinate={mapRegion} /> */}
 
             {specialists && specialists.map((specialist, index) => (
               <Marker 
                 key={index}
                 title={specialist.name}
                 coordinate={{ latitude: specialist.locationLatitude, longitude: specialist.locationLongitude }} 
-                onSelect={() => setSelectedSpecialist(specialist)}
-                onDeselect={() => setSelectedSpecialist(null)}
+                onSelect={() => {
+                  setSelectedSpecialist(specialist);
+                  console.log("Selected specialist", specialist);
+                }}
+                onDeselect={() => {
+                  console.log("Deselected specialist");
+                  setSelectedSpecialist(null)
+                }}
                 pinColor="blue" />
             ))}
           </MapView>

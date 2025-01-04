@@ -1,15 +1,15 @@
 {
   "expo": {
-    "name": "my-app",
+    "name": "locato",
     "newArchEnabled": true,
-    "slug": "my-app",
+    "slug": "locato",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/LocatoLogo.png",
-    "scheme": "myapp",
+    "scheme": "locato",
     "userInterfaceStyle": "automatic",
     "splash": {
-      "image": "./assets/images/splash.png",
+      "image": "./assets/images/favicon.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -18,9 +18,11 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/adaptive-icon.png",
+        "foregroundImage": "./assets/images/favicon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.jamal_uddin.locato",
+      "googleServicesFile": "./android/app/google-services.json"
     },
     "web": {
       "bundler": "metro",
@@ -33,6 +35,15 @@
     ],
     "experiments": {
       "typedRoutes": true
-    }
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "b4cccfa0-0930-457f-bd42-e368e7620a37"
+      }
+    },
+    "owner": "jamal_uddin"
   }
 }

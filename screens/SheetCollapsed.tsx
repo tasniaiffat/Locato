@@ -5,6 +5,8 @@ import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
 import { Star } from 'lucide-react-native';
 import { Avatar, AvatarBadge, AvatarFallbackText, AvatarImage } from '@/components/ui/avatar';
 import { HStack } from '@/components/ui/hstack';
+import { router } from 'expo-router';
+
 
 
 const SpecialistCard = ({specialist}:{
@@ -13,9 +15,11 @@ const SpecialistCard = ({specialist}:{
   <View style={styles.container}>
   <View style={specialistCardStyles.user_info}>
     <View style={specialistCardStyles.username_avatar}>
-      <Avatar size='xs' style={specialistCardStyles.avatar}>
+      <Avatar size='md' style={specialistCardStyles.avatar}>
         <AvatarFallbackText style={{
-
+          fontSize: 15,
+          color: 'white',
+          fontWeight: 'bold',
         }}>
           {specialist.name}
         </AvatarFallbackText>
@@ -36,11 +40,7 @@ const SpecialistCard = ({specialist}:{
     
 
   </View>
-    <TouchableOpacity 
-      onPress={() => {}}
-      style={styles.button}>
-      <Text style={{color:'white'}}>Contact</Text>
-    </TouchableOpacity>
+    
   </View>
 );
 
@@ -74,7 +74,6 @@ const SpecialistServiceRateCard = ({specialist}:{
   <View style={styles.container}>
     <Text style={specialistDetailsStyles.title}>Service Rate</Text>
     <View style={specialistDetailsStyles.infoView}>
-      <Text style={specialistDetailsStyles.heading}>Service rate:</Text>
       <Text style={specialistDetailsStyles.subtitle}>{specialist.serviceRate} per hour</Text>
     </View>
   </View>
@@ -83,14 +82,31 @@ const SpecialistServiceRateCard = ({specialist}:{
 
 
 
-
 const SheetCollapsed = () => {
   const { selectedSpecialist, setSelectedSpecialist } = useSelectedSpecialist();
+
+
+  const handleProceed = () => {
+    console.log('Proceed');
+    selectedSpecialist && setSelectedSpecialist(selectedSpecialist);
+    router.push(`/schedule-appointment`);
+  }
   return (
     <View style={styles.sheetContainer}>
       {selectedSpecialist && 
         <View style={styles.view}>
           <SpecialistCard specialist={selectedSpecialist} />
+          <TouchableOpacity 
+            onPress={handleProceed}
+            style={styles.button}>
+            <Text style={{color:'white',textAlign:'center',fontSize:20}}>Proceed</Text>
+          </TouchableOpacity>
+          <View
+            style={{
+              borderBottomColor: 'black',
+              borderBottomWidth: StyleSheet.hairlineWidth,
+            }}
+          />
           <SpecialistServiceRateCard specialist={selectedSpecialist} />
           <SpecalistDetailsCard specialist={selectedSpecialist} />
         </View>
@@ -101,26 +117,34 @@ const SheetCollapsed = () => {
 }
 export default SheetCollapsed;
 
+
+
+
+
+
 const specialistCardStyles = StyleSheet.create({
   user_info: {
     width: '100%',
-    marginBottom: 20,
+    marginBottom: 10,
     // flexDirection: 'row',
     // alignItems: 'center',
   },
   avatar: {
-    width: 25,
-    height: 25,
+    width: 30,
+    height: 30,
     marginRight: 5,
-
     borderRadius: 50,
-    backgroundColor: 'red',
+    backgroundColor: 'grey',
+    alignItems: 'center',
+    justifyContent: 'center',
+    color: 'white',
   },
   username_avatar : {
     // width: '100%',
     display: 'flex',
     flexDirection: 'row',
     marginBottom: 10,
+    alignItems: 'center',
     // backgroundColor: 'red',
   },
   rating: {
@@ -166,7 +190,10 @@ const specialistDetailsStyles = StyleSheet.create({
 const styles = StyleSheet.create({
   sheetContainer: {
     width: '100%',
+    height: '100%',
     overflowY: 'hidden',
+    position: 'relative',
+    // backgroundColor: 'red',
   },
   view: {
     flexDirection: 'column',
@@ -177,11 +204,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     borderColor: 'grey',
     padding: 10,
-    // backgroundColor: 'red',
-    // borderEndColor: 'black',
-    // borderBlockColor: 'grey',
     borderWidth: 1,
-    // padding: 10,
   },
   title: {
     fontSize: 25,
@@ -196,7 +219,8 @@ const styles = StyleSheet.create({
     backgroundColor: 'blue',
     padding: 10,
     borderRadius: 5,
-    width: '30%',
     marginTop: 10,
+    marginBottom: 30,
+    // top: 5,
   }
 })
