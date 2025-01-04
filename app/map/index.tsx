@@ -9,6 +9,9 @@ import { showAlert } from "@/services/alertUtil";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SpecialistType } from "@/types/SpecialistType";
 import { SelectedSpecialistContext } from "@/contexts/SelectedSpecialistContext";
+import { getLocationPermission } from "@/services/getLocationPermission";
+import * as Location from "expo-location";
+
 
 const submitAssistanceRequest = async (data: string) => {
   console.log("Submitting request");
@@ -57,15 +60,47 @@ const MapPage = () => {
   // console.log("Query: ", query);
 
   const [specialists, setSpecialists] = useState<SpecialistType[]>([
-    {"active": true, "certifications": "string", "createdAt": "2024-11-21T19:55:41.279824", "email": "miraj@gmail.com", "experienceYears": 0, "id": 25, "locationLatitude": 23.765844, "locationLongitude": 90.35836, "name": "Miraj", "rating": 0, "role": "ROLE_SERVICE_PROVIDER", "serviceRate": 0, "specialties": [], "updatedAt": "2024-11-21T19:55:41.279824", "zone": {}},
-    {"active": true, "certifications": "string", "createdAt": "2024-11-21T19:55:41.279824", "email": "tahsinj@gmail.com", "experienceYears": 0, "id": 25, "locationLatitude": 23.763844, "locationLongitude": 90.35936, "name": "Tahsin", "rating": 0, "role": "ROLE_SERVICE_PROVIDER", "serviceRate": 0, "specialties": [], "updatedAt": "2024-11-21T19:55:41.279824", "zone": {}}
+    {"active": true, "certifications": "string", "createdAt": "2024-11-21T19:55:41.279824", "email": "miraj@gmail.com", "experienceYears": 0, "id": 25, "locationLatitude": 23.765844, "locationLongitude": 90.35836, "name": "Miraj", "rating": 3, "role": "ROLE_SERVICE_PROVIDER", "serviceRate": 0, "specialties": [], "updatedAt": "2024-11-21T19:55:41.279824", "zone": {}},
+    {"active": true, "certifications": "string", "createdAt": "2024-11-21T19:55:41.279824", "email": "tahsinj@gmail.com", "experienceYears": 0, "id": 25, "locationLatitude": 23.763844, "locationLongitude": 90.35936, "name": "Tahsin", "rating": 4, "role": "ROLE_SERVICE_PROVIDER", "serviceRate": 0, "specialties": [], "updatedAt": "2024-11-21T19:55:41.279824", "zone": {}}
   ]);
   const [selectedSpecialist, setSelectedSpecialist] = useState<SpecialistType | null>(null);
+
+  const [location, setLocation] = useState<Location.LocationObject | null>(null);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [mapRegion, setMapRegion] = useState({
+    latitude: 0,
+    longitude: 0,
+    latitudeDelta: 0.0922,
+    longitudeDelta: 0.0421,
+  });
   
 
   useEffect(() => {
+    console.log("1st useEffect");
     (async () => {
       const data = await submitAssistanceRequest(query as string);
+      getLocationPermission()
+      .then((status) => {
+        if (status !== "granted") {
+          setErrorMsg("Permission to access location was denied");
+          return;
+        }
+      })
+      .then(async () => {
+        let location = await Location.getCurrentPositionAsync({});
+        console.log("location", location);
+
+        setLocation(location);
+        setMapRegion({
+          latitude: location.coords.latitude,
+          longitude: location.coords.longitude,
+          latitudeDelta: 0.0922,
+          longitudeDelta: 0.0421,
+        })
+        console.log("Specialists");
+        
+        specialists && specialists.forEach( specialist => console.log(specialist.locationLatitude, specialist.locationLongitude));
+      });
       // setSpecialists(data?.specialistList || []);
     })();
   }, []);
@@ -73,7 +108,15 @@ const MapPage = () => {
   return (
     <SelectedSpecialistContext.Provider value={{selectedSpecialist, setSelectedSpecialist}}>
       <GestureHandlerRootView style={{ flex: 1 }}>
-          <GoogleMapView specialists={specialists} setSpecialists={setSpecialists} />
+          <GoogleMapView 
+            specialists={specialists} 
+            setSpecialists={setSpecialists}
+            location={location}
+            setLocation={setLocation}
+            errorMsg = {errorMsg}
+            setErrorMsg = {setErrorMsg}
+            mapRegion = {mapRegion}
+            setMapRegion = {setMapRegion} />
           <BottomSheet />
       </GestureHandlerRootView>
     </SelectedSpecialistContext.Provider>

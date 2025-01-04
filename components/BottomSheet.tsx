@@ -15,7 +15,7 @@ function BottomSheetComponent({ style } : {
   style?: object;
 }) {
   const bottomSheetRef = useRef<BottomSheet>(null);
-  const snapPoints = ['20%', '40%', '100%'];
+  const snapPoints = ['30%', '50%', '100%'];
   const [index, setIndex] = useState(0);
   
   const handleSheetChanges = (index: number) => {
@@ -39,7 +39,7 @@ function BottomSheetComponent({ style } : {
           onChange={handleSheetChanges}
         >
           <BottomSheetView style={styles.contentContainer}>
-            {
+            {/* {
               index === 0 ? 
                 <SheetCollapsed />
               : index === 1 ?
@@ -47,7 +47,8 @@ function BottomSheetComponent({ style } : {
               : index === 2 ?
                 <SheetExpanded />
               : null
-            }
+            } */}
+            <SheetCollapsed />
             {/* {selectedSpecialist && <Text>{selectedSpecialist.name}</Text>}
             {!selectedSpecialist && <Text>Showing specialists nearby</Text>} */}
           </BottomSheetView>
