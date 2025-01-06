@@ -18,10 +18,8 @@ import {
   FieldValues,
 } from "react-hook-form";
 import { router } from "expo-router";
-import api from "@/services/api";
-import { showAlert } from "@/services/alertUtil";
 
-const backgroundimage: ImageSourcePropType = require("@/assets/images/locato_bg_search.jpg");
+const backgroundImage: ImageSourcePropType = require("@/assets/images/locato_bg_search.jpg");
 
 const SearchDiv = () => {
   const [responseData, setResponseData] = useState<any>(null); 
@@ -34,36 +32,18 @@ const SearchDiv = () => {
 
   const onSubmit: SubmitHandler<FieldValues> = async (data) => {
     console.log(data.text);
-    await submitAssistanceRequest(data.text);
-    setIsModalVisible(true);
+    router.push({
+      pathname: "../map",
+      params: { query: data.text },
+    })
+    // setIsModalVisible(true);
   };
 
-  const submitAssistanceRequest = async (data: string) => {
-    try {
-      const requestBody = {
-        requestText: data,
-      };
-
-      const response = await api.post("/assistance", requestBody);
-
-      if (response.status === 200) {
-        console.log("Request successful");
-        setResponseData(response.data); 
-        showAlert("Success", "Assistance request submitted successfully!");
-      } else {
-        console.log("Request failed");
-        showAlert("Error", "Failed to submit assistance request. Please try again.");
-      }
-    } catch (error) {
-      console.log("Error in request submission");
-      console.error("Error:", error);
-      showAlert("Error", "An error occurred. Please try again.");
-    }
-  };
+  
 
   return (
     <ImageBackground
-      source={backgroundimage}
+      source={backgroundImage}
       resizeMode="cover"
       style={styles.background}
     >
@@ -89,7 +69,7 @@ const SearchDiv = () => {
         {errors.text && <Text style={styles.errorText}>This is required.</Text>}
 
         {/* Modal for displaying response data */}
-        <Modal
+        {/* <Modal
           animationType="slide"
           transparent={true}
           visible={isModalVisible}
@@ -123,8 +103,6 @@ const SearchDiv = () => {
               ) : (
                 <Text>No results found.</Text>
               )}
-
-              {/* Close button */}
               <TouchableOpacity
                 style={styles.closeButton}
                 onPress={() => setIsModalVisible(false)}
@@ -133,7 +111,7 @@ const SearchDiv = () => {
               </TouchableOpacity>
             </View>
           </View>
-        </Modal>
+        </Modal> */}
       </View>
     </ImageBackground>
   );

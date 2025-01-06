@@ -1,19 +1,22 @@
 import { ImageBackground, StyleSheet, ScrollView } from 'react-native'
-import React from 'react'
+import React, { useState } from 'react'
 import { colors } from '@/constants/Colors'
 import SearchDiv from '@/components/SearchDiv'
 import BookmarksDashboard from '@/components/BookmarksDashboard'
 import ServicesNearby from '@/components/ServicesNearby'
+import { SpecialistType } from '@/types/SpecialistType'
+import { SelectedSpecialistContext } from '@/contexts/SelectedSpecialistContext'
 
 export default function Home() {
+
   return (
     <ScrollView 
       style={styles.container}
       showsVerticalScrollIndicator={false}>
       {/* <ImageBackground src=""/> */}
-      <SearchDiv />
-      <ServicesNearby />
-      <BookmarksDashboard />
+        <SearchDiv />
+        <ServicesNearby />
+        <BookmarksDashboard />
     </ScrollView>
   )
 }
