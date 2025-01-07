@@ -6,108 +6,51 @@ import {
   GestureHandlerRootView,
   TapGestureHandler,
 } from "react-native-gesture-handler";
-import * as Location from "expo-location";
-import { getLocationPermission } from "@/services/getLocationPermission";
-import { CoordinateType } from "@/types/CoordinateType";
 import useSelectedSpecialist from "@/hooks/useSelectedSpecialist";
 import { SpecialistType } from "@/types/SpecialistType";
-
-type MapRegionType = {
-  latitude: number;
-  longitude: number;
-  latitudeDelta: number;
-  longitudeDelta: number;
-}
+import { useLocation } from "@/hooks/useLocation";
+import { useMapRegion } from "@/hooks/useMapRegion";
 
 type GoogleMapViewProps = {
   specialists: SpecialistType[];
   setSpecialists: Dispatch<SetStateAction<SpecialistType[]>>;
-  location: Location.LocationObject | null;
-  setLocation: Dispatch<SetStateAction<Location.LocationObject | null>>;
   errorMsg: string | null;
   setErrorMsg: Dispatch<SetStateAction<string | null>>;
-  mapRegion: MapRegionType;
-  setMapRegion: Dispatch<SetStateAction<MapRegionType>>;
   style?: object;
 };
 
 const GoogleMapView = ({
   specialists,
   setSpecialists,
-  location,
-  setLocation,
   errorMsg,
   setErrorMsg,
-  mapRegion,
-  setMapRegion,
-  style
+  style,
 }: GoogleMapViewProps) => {
-  // const [location, setLocation] = useState<Location.LocationObject | null>(null);
-  // const [errorMsg, setErrorMsg] = useState<string | null>(null);
-  // const [mapRegion, setMapRegion] = useState({
-  //   latitude: 0,
-  //   longitude: 0,
-  //   latitudeDelta: 0.0922,
-  //   longitudeDelta: 0.0421,
-  // });
-  
-  const {selectedSpecialist, setSelectedSpecialist } = useSelectedSpecialist();
-  
-
-  // useEffect(() => {
-  //   console.log("1st useEffect");
-    
-  //   getLocationPermission()
-  //     .then((status) => {
-  //       if (status !== "granted") {
-  //         setErrorMsg("Permission to access location was denied");
-  //         return;
-  //       }
-  //     })
-  //     .then(async () => {
-  //       let location = await Location.getCurrentPositionAsync({});
-  //       console.log("location", location);
-
-  //       setLocation(location);
-  //       setMapRegion({
-  //         latitude: location.coords.latitude,
-  //         longitude: location.coords.longitude,
-  //         latitudeDelta: 0.0922,
-  //         longitudeDelta: 0.0421,
-  //       })
-  //       console.log("Specialists");
-        
-  //       specialists && specialists.forEach( specialist => console.log(specialist.locationLatitude, specialist.locationLongitude));
-  //     });
-  // }, []);
-
-
+  const { selectedSpecialist, setSelectedSpecialist } = useSelectedSpecialist();
+  const { location } = useLocation();
+  const { mapRegion, setMapRegion } = useMapRegion();
+  const [isRegionSet, setIsRegionSet] = useState(false);
 
   useEffect(() => {
-    console.log("2nd useEffect");
-    if (!location) {
-      console.log("No location");
-      return;
-    };
-    
-
-    setMapRegion({
-      latitude: location.coords.latitude,
-      longitude: location.coords.longitude,
-      latitudeDelta: 0.0922,
-      longitudeDelta: 0.0421,
-    });
-    console.log("Map region", mapRegion);
-    
+    if (location) {
+      setMapRegion({
+        latitude: location.coords.latitude,
+        longitude: location.coords.longitude,
+        latitudeDelta: 0.0922,
+        longitudeDelta: 0.0421,
+      });
+      setIsRegionSet(true); // Mark region as set after initializing
+    }
   }, [location]);
-  // console.log("location", location);
-  if (location === null) {
+
+  if (!location || !isRegionSet) {
     return (
       <View style={styles.bottom_container}>
-        <Text>{errorMsg}</Text>
+        <Text>{errorMsg || "Loading location..."}</Text>
       </View>
     );
   }
+
   return (
     <View style={{ ...styles.container, ...style }}>
       <GestureHandlerRootView>
@@ -117,38 +60,41 @@ const GoogleMapView = ({
             showsUserLocation={true}
             showsMyLocationButton={true}
             region={mapRegion}
-            style={styles.map}>
-            {/* <Marker 
-              title="You" 
-              coordinate={mapRegion} /> */}
-
-            {specialists && specialists.map((specialist, index) => (
-              <Marker 
-                key={index}
-                title={specialist.name}
-                coordinate={{ latitude: specialist.locationLatitude, longitude: specialist.locationLongitude }} 
-                onSelect={() => {
-                  setSelectedSpecialist(specialist);
-                  console.log("Selected specialist", specialist);
-                }}
-                onDeselect={() => {
-                  console.log("Deselected specialist");
-                  setSelectedSpecialist(null)
-                }}
-                pinColor="blue" />
-            ))}
+            style={styles.map}
+          >
+            {specialists &&
+              specialists.map((specialist, index) => (
+                <Marker
+                  key={index}
+                  title={specialist.name}
+                  coordinate={{
+                    latitude: specialist.locationLatitude,
+                    longitude: specialist.locationLongitude,
+                  }}
+                  onSelect={() => {
+                    setSelectedSpecialist(specialist);
+                    console.log("Selected specialist", specialist);
+                  }}
+                  onDeselect={() => {
+                    console.log("Deselected specialist");
+                    setSelectedSpecialist(null);
+                  }}
+                  pinColor="blue"
+                />
+              ))}
           </MapView>
         </TapGestureHandler>
       </GestureHandlerRootView>
     </View>
   );
 };
+
 export default GoogleMapView;
 
 const styles = StyleSheet.create({
   container: {
     width: Dimensions.get("screen").width,
-    minHeight: Dimensions.get("screen").height*0.5,
+    minHeight: Dimensions.get("screen").height * 0.5,
     flex: 1,
   },
   map: {

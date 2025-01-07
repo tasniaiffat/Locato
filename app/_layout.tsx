@@ -1,24 +1,66 @@
 import { Text, View } from 'react-native'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Stack } from 'expo-router'
 import { NativeBaseProvider, Box } from "native-base";
 import { GluestackUIProvider } from '@/components/ui/gluestack-ui-provider';
 import { SpecialistType } from '@/types/SpecialistType';
 import { SelectedSpecialistContext } from '@/contexts/SelectedSpecialistContext';
 import { usePushNotifications } from '@/hooks/usePushNotifications';
+import * as Location from 'expo-location';
+import { LocationContext } from '@/contexts/LocationContext';
+import { getLocationPermission } from '@/services/getLocationPermission';
+import { MapRegionContext } from '@/contexts/MapRegionContext';
 
 const RootLayout = () =>{
     
     const [selectedSpecialist, setSelectedSpecialist] = useState<SpecialistType | null>(null);
     const { expoPushToken, notification } = usePushNotifications();
+    const [location, setLocation ] = useState<Location.LocationObject | null>(null);
+    const [errorMsg, setErrorMsg] = useState<string | null>(null);
+    const [mapRegion, setMapRegion] = useState({
+        latitude: 0,
+        longitude: 0,
+        latitudeDelta: 0.0922,
+        longitudeDelta: 0.0421,
+    });
 
     const data = JSON.stringify(notification,undefined,2);
     console.log(expoPushToken);
     console.log(data);
+
+    useEffect(() => {
+        console.log("1st useEffect");
+        (async () => {
+          getLocationPermission()
+          .then((status) => {
+            if (status !== "granted") {
+              setErrorMsg("Permission to access location was denied");
+              return;
+            }
+          })
+          .then(async () => {
+            let location = await Location.getCurrentPositionAsync({});
+            console.log("location", location);
+    
+            setLocation(location);
+            setMapRegion({
+              latitude: location.coords.latitude,
+              longitude: location.coords.longitude,
+              latitudeDelta: 0.0922,
+              longitudeDelta: 0.0421,
+            })
+            console.log("Specialists");
+            
+          });
+          // setSpecialists(data?.specialistList || []);
+        })();
+    }, []);
     
 
     return (
         <GluestackUIProvider>
+        <MapRegionContext.Provider value={{mapRegion, setMapRegion}}>
+        <LocationContext.Provider value={{location, setLocation}}>
         <SelectedSpecialistContext.Provider value={{selectedSpecialist, setSelectedSpecialist}}>
         <Stack screenOptions={{headerShown: false, gestureEnabled: true }}>
             <Stack.Screen name = "index" options={{headerShown: false}} />
@@ -29,6 +71,8 @@ const RootLayout = () =>{
             <Stack.Screen name = "(tabs)" options={{headerShown: false}} />
         </Stack>
         </SelectedSpecialistContext.Provider>
+        </LocationContext.Provider>
+        </MapRegionContext.Provider>
         </GluestackUIProvider>
     )
   
