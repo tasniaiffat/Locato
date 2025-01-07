@@ -69,6 +69,17 @@ const ScheduleAppointment = () => {
         />
         <AppointmentSummary selectedSpecialist={selectedSpecialist} />
 
+        <View style={styles.statsContainer}>
+          <View style={styles.statBox}>
+            <Text style={styles.statFeatureText}>10</Text>
+            <Text style={styles.statText}>Projects Completed</Text>
+          </View>
+          <View style={styles.statBox}>
+            <Text style={styles.statFeatureText}>৳ 31,000</Text>
+            <Text style={styles.statText}>Earned Last Month</Text>
+          </View>
+        </View>
+
         <Text style={styles.text}>Time of Service</Text>
         <Controller
           control={control}
@@ -157,6 +168,32 @@ const styles = StyleSheet.create({
     fontSize: 20,
     textAlign: "left",
     marginBottom: 10,
+  },
+  statsContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginBottom: 20,
+  },
+  statBox: {
+    flex: 1,
+    marginHorizontal: 5,
+    backgroundColor: "rgba(255, 255, 255, 0.3)",
+    borderRadius: 10,
+    padding: 15,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  statText: {
+    color: "navy",
+    fontSize: 10,
+    textAlign: "center",
+    fontWeight: "bold",
+  },
+  statFeatureText: {
+    color: "navy",
+    fontSize: 20,
+    textAlign: "center",
+    fontWeight: "bold",
   },
   dateInput: {
     height: 50,
