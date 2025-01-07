@@ -96,7 +96,7 @@ const ServicesNearby = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.background,
+    backgroundColor: "#dfe4e0",
     paddingHorizontal: 16,
     paddingVertical: 20,
   },
