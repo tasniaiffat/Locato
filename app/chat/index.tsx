@@ -1,7 +1,14 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { View, TextInput, Button, FlatList, Text, StyleSheet } from 'react-native';
+import { View, TextInput, Button, FlatList, Text, StyleSheet, KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import SockJS from 'sockjs-client';
 import { Stomp } from '@stomp/stompjs';
+
+// Color definitions
+const tintColorLight = '#0a7ea4';
+const tintColorDark = '#fff';
+export const grey = "#2a323d";
+export const lightblue = 'lightblue';
+export const background = '#375f6f';
 
 const ChatApp = () => {
   const [sender, setSender] = useState('');
@@ -61,21 +68,7 @@ const ChatApp = () => {
 
   return (
     <View style={styles.container}>
-      <Text>Chat with the Specialist</Text>
-
-      <TextInput
-        style={styles.input}
-        placeholder="Enter your name"
-        value={sender}
-        onChangeText={setSender}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Enter a message"
-        value={message}
-        onChangeText={setMessage}
-      />
-      <Button title="Send Message" onPress={sendMessage} />
+      <Text style={styles.header}>Chat with the Specialist</Text>
 
       <FlatList
         data={messages}
@@ -83,6 +76,26 @@ const ChatApp = () => {
         keyExtractor={(item) => item.key}
         style={styles.messageArea}
       />
+
+      <KeyboardAvoidingView style={styles.inputArea} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+          <View style={styles.inputContainer}>
+            <TextInput
+              style={styles.input}
+              placeholder="Enter your name"
+              value={sender}
+              onChangeText={setSender}
+            />
+            <TextInput
+              style={styles.input}
+              placeholder="Enter a message"
+              value={message}
+              onChangeText={setMessage}
+            />
+            <Button title="Send Message" onPress={sendMessage} color={tintColorLight} />
+          </View>
+        </TouchableWithoutFeedback>
+      </KeyboardAvoidingView>
     </View>
   );
 };
@@ -90,26 +103,43 @@ const ChatApp = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 10,
-    justifyContent: 'center',
+    backgroundColor: background,
+    justifyContent: 'flex-end', // Ensure the input stays at the bottom
   },
-  input: {
-    height: 40,
-    borderColor: '#ccc',
-    borderWidth: 1,
-    marginBottom: 10,
-    paddingLeft: 10,
+  header: {
+    color: tintColorDark,
+    fontSize: 20,
+    textAlign: 'center',
+    marginTop: 20,
   },
   messageArea: {
-    marginTop: 20,
-    flex: 1,
     padding: 10,
-    borderTopWidth: 1,
-    borderTopColor: '#ccc',
+    flex: 1,
+    marginBottom: 10,
   },
   message: {
     fontSize: 16,
-    marginBottom: 5,
+    color: tintColorDark,
+    marginBottom: 10,
+  },
+  inputArea: {
+    backgroundColor: grey,
+    padding: 10,
+  },
+  inputContainer: {
+    flexDirection: 'column', // Stack input fields vertically
+    justifyContent: 'center',
+    alignItems: 'stretch', // Ensure they take up the full width
+  },
+  input: {
+    height: 40,
+    width: '100%', // Make input take the full width
+    borderColor: tintColorLight,
+    borderWidth: 1,
+    marginBottom: 10,
+    paddingLeft: 10,
+    color: tintColorDark,
+    backgroundColor: lightblue,
   },
 });
 
