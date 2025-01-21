@@ -22,20 +22,45 @@ import MyText from "@/components/MyText";
 import api from "@/services/api";
 import { showAlert } from "@/services/alertUtil";
 import * as SecureStore from "expo-secure-store";
+import { ExpoPushToken } from 'expo-notifications';
+import { usePushNotifications } from "@/hooks/usePushNotifications";
+
 
 const backgroundimage: ImageSourcePropType = require("@/assets/images/locato_bg.jpg");
 const locatologo: ImageSourcePropType = require("@/assets/images/LocatoLogo-transparent.png");
 
+const pushExpoToken = async (expoPushToken: ExpoPushToken) => {
+  try {
+    console.log("Push Token", expoPushToken.data);
+    
+    const response = (await api.post(`/api/expo-token`,
+      { token:expoPushToken.data, },
+      { headers: {
+          Authorization: `Bearer ${await SecureStore.getItemAsync("jwt")}`,  
+      }}
+    )).data;
+    console.log("Push Token Response", response);
+    
+  } catch (error) {
+    console.error(error);
+  }
+
+}
+
 const Index = () => {
 
-  useEffect(() => {
-    SecureStore.getItemAsync("jwt")
-    .then((jwt) => {
-      if (jwt) {
-        router.push("/(tabs)/");
-      }
-    });
-  },[]);
+  const { expoPushToken, notification } = usePushNotifications();
+
+
+
+  // useEffect(() => {
+  //   SecureStore.getItemAsync("jwt")
+  //   .then((jwt) => {
+  //     if (jwt) {
+  //       router.push("/(tabs)/");
+  //     }
+  //   });
+  // },[]);
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -57,6 +82,10 @@ const Index = () => {
         console.log(response.data?.jwt);
         if (response.data?.jwt) {
           await SecureStore.setItemAsync("jwt", response.data.jwt);
+        }
+
+        if (expoPushToken) {
+          pushExpoToken(expoPushToken);
         }
         router.push("/(tabs)/");
       } else {

@@ -20,6 +20,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { to12HourFormat } from '@/utils/date';
 import useSelectedSpecialist from '@/hooks/useSelectedSpecialist';
 import AppointmentSummary from '@/components/AppointmentSummary';
+import { router } from 'expo-router';
 
 const backgroundimage = require("@/assets/images/locato_bg.jpg");
 
@@ -52,6 +53,7 @@ const ScheduleAppointment = () => {
       "Booking Confirmed",
       `Selected Time: ${to12HourFormat(data.datetime)}\nAdditional Details: ${data.details || "None"}`
     );
+    router.push('payment');
   };
 
   return (
