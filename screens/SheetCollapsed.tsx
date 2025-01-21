@@ -91,6 +91,9 @@ const SheetCollapsed = () => {
     selectedSpecialist && setSelectedSpecialist(selectedSpecialist);
     router.push(`/schedule-appointment`);
   }
+  const handleBookmark = () => {
+    //FIX 
+  }
   return (
     <View style={styles.sheetContainer}>
       {selectedSpecialist && 
@@ -100,6 +103,11 @@ const SheetCollapsed = () => {
             onPress={handleProceed}
             style={styles.button}>
             <Text style={{color:'white',textAlign:'center',fontSize:20}}>Proceed</Text>
+          </TouchableOpacity>
+          <TouchableOpacity 
+            onPress={handleBookmark}
+            style={styles.bookmarkbutton}>
+            <Text style={{color:'white',textAlign:'center',fontSize:20}}>Bookmark</Text>
           </TouchableOpacity>
           <View
             style={{
@@ -220,6 +228,13 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 5,
     marginTop: 10,
+    marginBottom: 5,
+    // top: 5,
+  },
+  bookmarkbutton: {
+    backgroundColor: 'green',
+    padding: 10,
+    borderRadius: 5,
     marginBottom: 30,
     // top: 5,
   }
