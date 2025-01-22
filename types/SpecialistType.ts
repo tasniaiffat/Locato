@@ -1,5 +1,5 @@
 // import z from 'zod';
-import { ZoneType } from './ZoneType';
+import { SpecialtyType, ZoneType } from './ZoneType';
 
 export enum SpecialistRole {
     ROLE_SERVICE_PROVIDER = "ROLE_SERVICE_PROVIDER",
@@ -44,7 +44,7 @@ export type SpecialistType = {
     rating: number;
     role: SpecialistRole.ROLE_SERVICE_PROVIDER | SpecialistRole.ROLE_USER;
     serviceRate: number;
-    specialties: string[];
+    specialties: SpecialtyType[];
     updatedAt: string;
     zone: ZoneType;
 };

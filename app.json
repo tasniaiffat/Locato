@@ -22,7 +22,12 @@
         "backgroundColor": "#ffffff"
       },
       "package": "com.jamal_uddin.locato",
-      "googleServicesFile": "./android/app/google-services.json"
+      "googleServicesFile": "./android/app/google-services.json",
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyBpkKtrJuRksOM20U2WPNr-uZvS3K8Yf9Q"
+        }
+      }
     },
     "extra": {
       "eas": {

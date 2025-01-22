@@ -26,21 +26,12 @@ const submitAssistanceRequest = async (data: string) => {
 
     const response = await api.post("/assistance", requestBody);
 
-    if (response.status !== 200) {
-      console.log("Request failed");
-      showAlert(
-        "Error",
-        "Failed to submit assistance request. Please try again."
-      );
-      throw new Error("Request failed");
-    }
-
     console.log("Data: ", response.data);
 
     // setSpecialists(response.data.content);
-    const specialists: SpecialistType[] = response.data.content;
+    const specialistList: SpecialistType[] = response.data.content;
 
-    const specialistsCoordinates: CoordinateType[] = specialists.map(
+    const specialistsCoordinates: CoordinateType[] = specialistList.map(
       (specialist: any) => {
         return {
           latitude: specialist.locationLatitude,
@@ -49,8 +40,9 @@ const submitAssistanceRequest = async (data: string) => {
       }
     );
     console.log("Specialists coordinates", specialistsCoordinates);
-    // setSpecialistLocation(specialistsCoordinates);
-    return { specialistList: specialists, specialistsCoordinates };
+
+    return { specialistList, specialistsCoordinates };
+
   } catch (error) {
     console.log("Error in request submission");
     console.error("Error:", error);
@@ -82,6 +74,17 @@ const MapPage = () => {
 
   console.log("Location", location);
   console.log("Map Region", mapRegion);
+
+  const fetchSpecialists = async ()=>{
+    const response = await submitAssistanceRequest(query as string);
+
+    setSpecialists(response?.specialistList || []);
+  }
+
+
+  useEffect(()=> {
+    fetchSpecialists();
+  },[]);
   
 
   

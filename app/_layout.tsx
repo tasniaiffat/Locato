@@ -1,6 +1,6 @@
 import { Text, View } from 'react-native'
 import React, { useEffect, useState } from 'react'
-import { Stack } from 'expo-router'
+import { router, Stack } from 'expo-router'
 import { NativeBaseProvider, Box } from "native-base";
 import { GluestackUIProvider } from '@/components/ui/gluestack-ui-provider';
 import { SpecialistType } from '@/types/SpecialistType';
@@ -71,6 +71,18 @@ const RootLayout = () =>{
         // setSpecialists(data?.specialistList || []);
       })();
   }, []);
+
+  useEffect(()=>{
+    if (notification?.request?.content?.data?.url) {
+      const { route, ...params } = notification.request.content.data;
+      console.log("Foreground Notification Navigate to:", route);
+
+      router.push({
+        pathname: route, // Remove the custom scheme
+        params: params || {}, // Pass additional parameters
+      });
+    }
+  },[notification]);
 
   const fetchPublishableKey = async () => {
     const key = await fetchKey();
