@@ -78,7 +78,7 @@ const RootLayout = () =>{
       console.log("Foreground Notification Navigate to:", route);
 
       router.push({
-        pathname: route, // Remove the custom scheme
+        pathname: route || "", // Remove the custom scheme
         params: params || {}, // Pass additional parameters
       });
     }

@@ -14,7 +14,7 @@ import {
   TouchableWithoutFeedback,
   KeyboardAvoidingView,
 } from "react-native";
-import { grey, lightblue } from "../constants/Colors";
+import { grey, lightblue } from "@/constants/Colors";
 import Heading from "@/components/Heading";
 import SubHeading from "@/components/MyText";
 import MyLink from "@/components/MyLink";
@@ -29,23 +29,6 @@ import { usePushNotifications } from "@/hooks/usePushNotifications";
 const backgroundimage: ImageSourcePropType = require("@/assets/images/locato_bg.jpg");
 const locatologo: ImageSourcePropType = require("@/assets/images/LocatoLogo-transparent.png");
 
-const pushExpoToken = async (expoPushToken: ExpoPushToken) => {
-  try {
-    console.log("Push Token", expoPushToken.data);
-    
-    const response = (await api.post(`/api/expo-token`,
-      { token:expoPushToken.data, },
-      { headers: {
-          Authorization: `Bearer ${await SecureStore.getItemAsync("jwt")}`,  
-      }}
-    )).data;
-    console.log("Push Token Response", response);
-    
-  } catch (error) {
-    console.error(error);
-  }
-
-}
 
 const Index = () => {
 
@@ -76,7 +59,7 @@ const Index = () => {
     }
 
     try {
-      const response = await api.post("/auth/login", { email, password });
+      const response = await api.post("/auth/login?role=ROLE_SERVICE_PROVIDER", { email, password });
       if (response.status === 200) {
         showAlert("Success", "User logged in successfully!");
         console.log(response.data?.jwt);
@@ -87,10 +70,6 @@ const Index = () => {
         }
         if (response.data?.userId) {
           await SecureStore.setItemAsync("userId", JSON.stringify(response.data.userId));
-        }
-
-        if (expoPushToken) {
-          pushExpoToken(expoPushToken);
         }
         router.push("/(tabs)/");
       } else {
@@ -112,7 +91,7 @@ const Index = () => {
           <View style={styles.container}>
             <View style={styles.rightContainer}>
               <Image source={locatologo} style={styles.logo} />
-              <Heading textLabel="Welcome Back" textColor="white" />
+              <Heading textLabel="Login as Specialist" textColor="white" />
               <SubHeading textLabel="Login to your account" textColor={grey} />
               <View style={styles.formContainer}>
                 <TextInput
@@ -140,14 +119,6 @@ const Index = () => {
                   />
                 </View>
                 <MyButton bgColor={lightblue} textColor={grey} btnLabel="Login" onPress={handleLogin} />
-                <View style={styles.signupcta}>
-                  <MyText textLabel="Working with us?" textColor="white" fontWeight="normal" />
-                  <MyLink
-                    textLabel="Login as Specialist"
-                    textColor="white"
-                    onPress={() => router.push("/login-specialist")}
-                  />
-                </View>
                 <View style={styles.signupcta}>
                   <MyText textLabel="Don't have an account? " textColor="white" fontWeight="normal" />
                   <MyLink
