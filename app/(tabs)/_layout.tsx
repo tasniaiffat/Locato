@@ -32,6 +32,9 @@ export default function TabRoot() {
         tabBarStyle: {
           backgroundColor: "#dfe4e0", 
         },
+        tabBarIconStyle: {
+          color: '#dfe4e0'
+        }
       }} 
       >
         <Tabs.Screen name = "index" options={{title: "Home", tabBarIcon: ({ color }) => <AntDesign size={28} name="home" color={color}/> }}/>

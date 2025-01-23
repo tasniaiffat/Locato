@@ -16,16 +16,14 @@ const IncomingRequest = () => {
   const acceptRequest = async () => {
     console.log(serviceRequest?.serviceRequestId);
     
-    const response = await api.patch(`/service_request/${serviceRequest?.serviceRequestId}/status`,{
-      status: "ACCEPTED",
-    });
+    const response = await api.patch(`/service_request/go-to-chat?id=${serviceRequest?.serviceRequestId}`);
     console.log(response.data);
     Alert.alert("Request Accepted");
     router.replace("/(tabs)/");
     
   };
   const declineRequest = async () => {
-    const response = await api.patch(`/service_request/${serviceRequest?.serviceRequestId}/status`,{
+    const response = await api.patch(`/service_request/status?id=${serviceRequest?.serviceRequestId}`,{
       status: "REJECTED",
     });
     console.log(response.data);

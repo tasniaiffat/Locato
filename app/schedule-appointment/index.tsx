@@ -44,15 +44,15 @@ const ScheduleAppointment = () => {
   const requestService = async () => {
     try {
       const requestBody = {
-        userId: Number(await SecureStore.getItemAsync("userId")),
+        userId: Number(await SecureStore.getItemAsync("userId") || 0),
         serviceProviderId: selectedSpecialist?.id,
-        jobType: "Plumber",
-        jobDescription: await SecureStore.getItemAsync("searchText"),
+        jobType: await SecureStore.getItemAsync("jobType") || "",
+        jobDescription: await SecureStore.getItemAsync("searchText") || "",
         appointmentDataTime: dateTime?.toISOString(),
       }
       console.log("Request Body", requestBody);
       
-      const response = await api.post('/service_request/service-request', requestBody);
+      const response = await api.post('/service_request', requestBody);
       console.log(response.data);
       return response.data;
     } catch (error) {

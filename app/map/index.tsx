@@ -14,9 +14,10 @@ import * as Location from "expo-location";
 import useSelectedSpecialist from "@/hooks/useSelectedSpecialist";
 import { useLocation } from "@/hooks/useLocation";
 import { useMapRegion } from "@/hooks/useMapRegion";
+import * as SecureStore from "expo-secure-store";
 
 
-const submitAssistanceRequest = async (data: string) => {
+const submitAssistanceRequest = async (data: string, latitude:number, longitude:number) => {
   console.log("Submitting request");
 
   try {
@@ -24,12 +25,17 @@ const submitAssistanceRequest = async (data: string) => {
       requestText: data,
     };
 
-    const response = await api.post("/assistance", requestBody);
+    const uri = encodeURI(`/sp/SpecialistRadius?givenText=${data}&latitude=${latitude}&longitude=${longitude}&radius=100&page=0&size=10`);
+
+    const response = await api.get(uri);
 
     console.log("Data: ", response.data);
 
     // setSpecialists(response.data.content);
-    const specialistList: SpecialistType[] = response.data.content;
+    const jobType = response.data.specialistName;
+    await SecureStore.setItemAsync("jobType", jobType);    
+
+    const specialistList: SpecialistType[] = response.data.serviceProviders;
 
     const specialistsCoordinates: CoordinateType[] = specialistList.map(
       (specialist: any) => {
@@ -76,7 +82,7 @@ const MapPage = () => {
   console.log("Map Region", mapRegion);
 
   const fetchSpecialists = async ()=>{
-    const response = await submitAssistanceRequest(query as string);
+    const response = await submitAssistanceRequest(query as string, location?.coords.latitude || 23, location?.coords.longitude || 90);
 
     setSpecialists(response?.specialistList || []);
   }
