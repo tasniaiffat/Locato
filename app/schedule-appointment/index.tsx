@@ -44,14 +44,17 @@ const ScheduleAppointment = () => {
   const requestService = async () => {
     try {
       const requestBody = {
-        userId: await SecureStore.getItemAsync("userId"),
+        userId: Number(await SecureStore.getItemAsync("userId")),
         serviceProviderId: selectedSpecialist?.id,
         jobType: "Plumber",
         jobDescription: await SecureStore.getItemAsync("searchText"),
-        appointmentDataTime: dateTime,
+        appointmentDataTime: dateTime?.toISOString(),
       }
-      const response = await api.post('/service-request/service-request', requestBody);
+      console.log("Request Body", requestBody);
+      
+      const response = await api.post('/service_request/service-request', requestBody);
       console.log(response.data);
+      return response.data;
     } catch (error) {
       console.error(error);
       throw error;
@@ -70,7 +73,9 @@ const ScheduleAppointment = () => {
 
   const onSubmit: SubmitHandler<FieldValues> = async (data) => {
     try {
-      await requestService();
+      const response = await requestService();
+      console.log("Response", response);
+      
       Alert.alert(
         "Booking Confirmed",
         `Selected Time: ${to12HourFormat(data.datetime)}\nAdditional Details: ${data.details || "None"}`

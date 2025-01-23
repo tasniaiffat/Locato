@@ -22,6 +22,7 @@ import MyText from "@/components/MyText";
 import api from "@/services/api";
 import { showAlert } from "@/services/alertUtil";
 
+
 const backgroundimage:ImageSourcePropType = require("@/assets/images/locato_bg.jpg");
 const locatologo:ImageSourcePropType = require("@/assets/images/LocatoLogo-transparent.png");
 
@@ -168,6 +169,14 @@ const Index = () => {
                 textLabel="Login"
                 textColor="white"
                 onPress={() => router.push("/login")}
+              />
+            </View>
+            <View style={styles.logincta}>
+              <MyText textLabel="Want to find work? " textColor="white" fontWeight="normal" />
+              <MyLink
+                textLabel="Sign Up as a Specialist"
+                textColor="white"
+                onPress={() => router.push("/register-specialist")}
               />
             </View>
           </View>

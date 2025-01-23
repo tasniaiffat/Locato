@@ -141,9 +141,9 @@ const RegisterSpecialist = () => {
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <Heading 
-        textColor="black" 
+        textColor={colors.textWhite}
         textLabel="Register as a Specialist" 
-        size={30}
+        size={35}
         style={{ marginBottom: 20 }} />
 
       <Text style={styles.label}>Email</Text>
@@ -209,13 +209,22 @@ const RegisterSpecialist = () => {
         )}
       />
 
-      <Text style={styles.label}>Specialities</Text>
+      <Text style={styles.label}>Specialties</Text>
       <Controller
         control={control}
         name="specialties"
         render={({ field: { onChange, value } }) => (
           <RNPickerSelect
-            onValueChange={onChange}
+            onValueChange={(selectedValue) => {
+              if (selectedValue) {
+                // Check if the value is already in the array to avoid duplicates
+                const updatedList = value.includes(selectedValue)
+                  ? value // If it already exists, keep the array unchanged
+                  : [...value, selectedValue]; // Add the new value to the array
+
+                onChange(updatedList); // Update the specialties array
+              }
+            }}
             items={specialities.map((speciality) => ({
               label: speciality.title,
               value: speciality.id,
@@ -224,7 +233,6 @@ const RegisterSpecialist = () => {
           />
         )}
       />
-
       <Text style={styles.label}>Experience (Years)</Text>
       <Controller
         control={control}
@@ -333,6 +341,7 @@ const styles = StyleSheet.create({
   label: {
     fontWeight: "bold",
     marginBottom: 10,
+    color: colors.textWhite,
   },
   input: {
       width: "100%",

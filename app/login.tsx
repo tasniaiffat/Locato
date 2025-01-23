@@ -156,14 +156,6 @@ const Index = () => {
                     onPress={() => router.push("/signup")}
                   />
                 </View>
-                <View style={styles.signupcta}>
-                  <MyText textLabel="Want to find work? " textColor="white" fontWeight="normal" />
-                  <MyLink
-                    textLabel="Sign Up as a Specialist"
-                    textColor="white"
-                    onPress={() => router.push("/register-specialist")}
-                  />
-                </View>
               </View>
             </View>
           </View>

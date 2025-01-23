@@ -85,7 +85,9 @@ export const usePushNotifications = (): PushNotificationState => {
                 const { route, ...params } = data;
                 router.push({
                     pathname: route || "",
-                    params: params || {},
+                    params: {
+                        data:JSON.stringify(params) || ""
+                    },
                 });
                 console.log(`Navigating to: ${route}, with params:`, params);
             }

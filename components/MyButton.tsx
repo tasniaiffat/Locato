@@ -20,6 +20,7 @@ const MyButton: React.FC<MyButtonProps> = ({ bgColor, btnLabel, textColor, onPre
         alignItems: "center",
         minWidth: 150,
         marginVertical: 10,
+        marginBottom: 40
       }}
     >
       <Text style={{ fontSize: 20, color: textColor, fontWeight: "bold" }}>
