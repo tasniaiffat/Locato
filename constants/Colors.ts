@@ -19,6 +19,7 @@ export const Colors = {
     tabIconDefault: '#687076',
     tabIconSelected: tintColorLight,
     errorText: '#FF0000',
+    lightblue: 'lightblue',
   },
   dark: {
     text: '#ECEDEE',

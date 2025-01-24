@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import {
   StyleSheet,
   View,
@@ -39,10 +39,10 @@ const ServicesNearby = () => {
       });
 
       if (response.status === 200) {
-        const formattedData = response.data.map((service: Service) => ({
+        const formattedData:Service[] = response.data.map((service: Service) => ({
           id: service.id,
           name: service.name,
-          specialties: service.specialties.map((spec) => spec.title).join(", "),
+          specialties: service.specialties,
           rating: service.rating,
         }));
         setServices(formattedData);
@@ -80,7 +80,7 @@ const ServicesNearby = () => {
           renderItem={({ item }) => (
             <ServiceCard
               name={item.name}
-              specialty={item.specialties}
+              specialty={item.specialties.map((spec) => spec.title).join(", ")}
               rating={item.rating || 0} // Ensures rating is always a number (default to 0 if undefined)
               key={item.id}
             />
