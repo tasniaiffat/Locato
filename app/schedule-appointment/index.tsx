@@ -167,7 +167,8 @@ const ScheduleAppointment = () => {
           style={styles.submitButton}
           onPress={handleSubmit(onSubmit)}
         >
-          <Text style={styles.submitText}>Request Appointment</Text>
+      
+          <Text style={styles.submitText}>Chat Now</Text>
         </TouchableOpacity>
       </SafeAreaView>
     </ImageBackground>

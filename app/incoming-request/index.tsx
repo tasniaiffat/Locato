@@ -10,16 +10,13 @@ const IncomingRequest = () => {
   const [serviceRequest, setServiceRequest] = useState<ServiceRequestType|null>(null);
   const {data} = useLocalSearchParams();
 
-  
-
-
   const acceptRequest = async () => {
     console.log(serviceRequest?.serviceRequestId);
     
     const response = await api.patch(`/service_request/go-to-chat?id=${serviceRequest?.serviceRequestId}`);
     console.log(response.data);
     Alert.alert("Request Accepted");
-    router.replace("/(tabs)/");
+    router.replace("/(servicetabs)/");
     
   };
   const declineRequest = async () => {
@@ -28,7 +25,7 @@ const IncomingRequest = () => {
     });
     console.log(response.data);
     Alert.alert("Request Declined");
-    router.replace("/(tabs)/");
+    router.replace("/(servicetabs)/");
   };
 
   useEffect(() => {
