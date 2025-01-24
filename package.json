@@ -30,6 +30,7 @@
     "@legendapp/motion": "^2.4.0",
     "@lottiefiles/dotlottie-react": "^0.9.3",
     "@lottiefiles/react-lottie-player": "^3.5.4",
+    "@react-native-async-storage/async-storage": "^2.1.0",
     "@react-native-community/checkbox": "^0.5.17",
     "@react-native-community/cli": "latest",
     "@react-native-community/datetimepicker": "8.2.0",
