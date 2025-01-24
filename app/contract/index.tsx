@@ -1,22 +1,33 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, StyleSheet, Button, Alert } from 'react-native';
+import api from '@/services/api';
 
 const ContractForm: React.FC = () => {
-  // State variables to hold form values
   const [serviceRequestId, setServiceRequestId] = useState<string>('');
   const [agreedPayment, setAgreedPayment] = useState<string>('');
   const [workCompletionTime, setWorkCompletionTime] = useState<string>('');
   const [jobSummary, setJobSummary] = useState<string>('');
 
   // Handle form submission
-  const handleSubmit = (): void => {
+  const handleSubmit =  async() => {
     if (!serviceRequestId || !agreedPayment || !workCompletionTime || !jobSummary) {
       Alert.alert('Error', 'Please fill in all fields.');
       return;
     }
-
-    // Simulate submitting contract
-    Alert.alert('Success', 'Contract has been submitted!');
+    const data = {
+      serviceRequestId: serviceRequestId,
+      agreedPayment: agreedPayment,
+      workCompletionTime: workCompletionTime,
+      jobSummary: jobSummary,
+    };
+  
+    try {
+      const response = await api.post('/jobcontract', data); // POST request using the `api` instance
+      console.log('Contract submitted successfully:', response.data); // Handle success
+    } catch (error) {
+      console.error('Error during contract submission:', error); // Handle error
+    }
+  
   };
 
   return (
