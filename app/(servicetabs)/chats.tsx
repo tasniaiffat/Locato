@@ -4,7 +4,7 @@ import { ScrollView, StyleSheet, Text } from "react-native";
 export default function Contribute() {
   return (
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
-      <Text>Contribute</Text>
+      <Text>Chats</Text>
     </ScrollView>
   );
 }

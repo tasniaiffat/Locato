@@ -93,7 +93,7 @@ const Index = () => {
         if (expoPushToken) {
           pushExpoToken(expoPushToken);
         }
-        router.push("/(tabs)/");
+        router.push('/(servicetabs)/');
       } else {
         showAlert("Error", "Login failed. Please try again.");
       }

@@ -39,7 +39,7 @@ export default function TabRoot() {
       >
         <Tabs.Screen name = "index" options={{title: "Home", tabBarIcon: ({ color }) => <AntDesign size={28} name="home" color={color}/> }}/>
         <Tabs.Screen name = "bookmarks" options={{title: "Bookmarks", tabBarIcon: ({ color }) => <FontAwesome size={28} name="bookmark" color={color}/>}}/>
-        <Tabs.Screen name = "contribute" options={{title: "Contribute", tabBarIcon: ({ color }) => <AntDesign size={28} name="plus" color={color}/>}}/>
+        <Tabs.Screen name = "chats" options={{title: "Chats", tabBarIcon: ({ color }) => <AntDesign size={28} name="plus" color={color}/>}}/>
     </Tabs>
   )
 }
