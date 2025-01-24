@@ -21,8 +21,10 @@ import { to12HourFormat } from '@/utils/date';
 import useSelectedSpecialist from '@/hooks/useSelectedSpecialist';
 import AppointmentSummary from '@/components/AppointmentSummary';
 import { router } from 'expo-router';
+import api from '@/services/api';
+import * as SecureStore from "expo-secure-store";
 
-const backgroundimage = require("@/assets/images/locato_bg.jpg");
+const backgroundImage = require("@/assets/images/locato_bg.jpg");
 
 
 
@@ -37,6 +39,27 @@ const ScheduleAppointment = () => {
   const [show, setShow] = useState(false);
   const { selectedSpecialist } = useSelectedSpecialist();
   console.log(selectedSpecialist);
+
+
+  const requestService = async () => {
+    try {
+      const requestBody = {
+        userId: Number(await SecureStore.getItemAsync("userId") || 0),
+        serviceProviderId: selectedSpecialist?.id,
+        jobType: await SecureStore.getItemAsync("jobType") || "",
+        jobDescription: await SecureStore.getItemAsync("searchText") || "",
+        appointmentDataTime: dateTime?.toISOString(),
+      }
+      console.log("Request Body", requestBody);
+      
+      const response = await api.post('/service_request', requestBody);
+      console.log(response.data);
+      return response.data;
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  };
   
 
   const handleDateChange = (event: any, selectedDate: Date | undefined) => {
@@ -48,17 +71,24 @@ const ScheduleAppointment = () => {
     }
   };
 
-  const onSubmit: SubmitHandler<FieldValues> = (data) => {
-    Alert.alert(
-      "Booking Confirmed",
-      `Selected Time: ${to12HourFormat(data.datetime)}\nAdditional Details: ${data.details || "None"}`
-    );
-    router.push('/chat')
+  const onSubmit: SubmitHandler<FieldValues> = async (data) => {
+    try {
+      const response = await requestService();
+      console.log("Response", response);
+      
+      Alert.alert(
+        "Booking Confirmed",
+        `Selected Time: ${to12HourFormat(data.datetime)}\nAdditional Details: ${data.details || "None"}`
+      );
+      router.push('payment');
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
     <ImageBackground
-      source={backgroundimage}
+      source={backgroundImage}
       resizeMode="cover"
       style={styles.background}
     >

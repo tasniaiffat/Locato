@@ -14,9 +14,10 @@ import * as Location from "expo-location";
 import useSelectedSpecialist from "@/hooks/useSelectedSpecialist";
 import { useLocation } from "@/hooks/useLocation";
 import { useMapRegion } from "@/hooks/useMapRegion";
+import * as SecureStore from "expo-secure-store";
 
 
-const submitAssistanceRequest = async (data: string) => {
+const submitAssistanceRequest = async (data: string, latitude:number, longitude:number) => {
   console.log("Submitting request");
 
   try {
@@ -24,23 +25,19 @@ const submitAssistanceRequest = async (data: string) => {
       requestText: data,
     };
 
-    const response = await api.post("/assistance", requestBody);
+    const uri = encodeURI(`/sp/SpecialistRadius?givenText=${data}&latitude=${latitude}&longitude=${longitude}&radius=100&page=0&size=10`);
 
-    if (response.status !== 200) {
-      console.log("Request failed");
-      showAlert(
-        "Error",
-        "Failed to submit assistance request. Please try again."
-      );
-      throw new Error("Request failed");
-    }
+    const response = await api.get(uri);
 
     console.log("Data: ", response.data);
 
     // setSpecialists(response.data.content);
-    const specialists: SpecialistType[] = response.data.content;
+    const jobType = response.data.specialistName;
+    await SecureStore.setItemAsync("jobType", jobType);    
 
-    const specialistsCoordinates: CoordinateType[] = specialists.map(
+    const specialistList: SpecialistType[] = response.data.serviceProviders;
+
+    const specialistsCoordinates: CoordinateType[] = specialistList.map(
       (specialist: any) => {
         return {
           latitude: specialist.locationLatitude,
@@ -49,8 +46,9 @@ const submitAssistanceRequest = async (data: string) => {
       }
     );
     console.log("Specialists coordinates", specialistsCoordinates);
-    // setSpecialistLocation(specialistsCoordinates);
-    return { specialistList: specialists, specialistsCoordinates };
+
+    return { specialistList, specialistsCoordinates };
+
   } catch (error) {
     console.log("Error in request submission");
     console.error("Error:", error);
@@ -82,6 +80,17 @@ const MapPage = () => {
 
   console.log("Location", location);
   console.log("Map Region", mapRegion);
+
+  const fetchSpecialists = async ()=>{
+    const response = await submitAssistanceRequest(query as string, location?.coords.latitude || 23, location?.coords.longitude || 90);
+
+    setSpecialists(response?.specialistList || []);
+  }
+
+
+  useEffect(()=> {
+    fetchSpecialists();
+  },[]);
   
 
   

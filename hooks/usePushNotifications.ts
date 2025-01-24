@@ -6,6 +6,7 @@ import * as Notifications from "expo-notifications";
 import Constants from "expo-constants";
 
 import { Alert, Platform } from "react-native";
+import { router } from "expo-router";
 
 
 export type PushNotificationState = {
@@ -76,6 +77,23 @@ export const usePushNotifications = (): PushNotificationState => {
         });
 
         responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
+            const { data } = response.notification.request.content;
+
+            if (data) {
+                console.log("Data from notification: ", data);
+                
+                const { route, ...params } = data;
+                router.push({
+                    pathname: route || "",
+                    params: {
+                        data:JSON.stringify(params) || ""
+                    },
+                });
+                console.log(`Navigating to: ${route}, with params:`, params);
+            }
+            else {
+                console.log("No valid URL found in notification data.");
+            }
             console.log(response);
         });
 

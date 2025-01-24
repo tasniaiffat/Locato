@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios from "axios";
 
 // Create the Axios instance
 const api = axios.create({

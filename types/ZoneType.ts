@@ -8,8 +8,15 @@
 // });
 
 export type ZoneType = {
-    createdAt: Date | null;
-    updatedAt: Date | null;
+    createdAt: string | null;
+    updatedAt: string | null;
+    id: number;
+    title: string;
+}
+
+export type SpecialtyType = {
+    createdAt: string | null;
+    updatedAt: string | null;
     id: number;
     title: string;
 }

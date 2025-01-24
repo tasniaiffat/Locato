@@ -18,6 +18,7 @@ import {
   FieldValues,
 } from "react-hook-form";
 import { router } from "expo-router";
+import * as SecureStore from "expo-secure-store"; 
 
 const backgroundImage: ImageSourcePropType = require("@/assets/images/locato_bg_search.jpg");
 
@@ -32,6 +33,9 @@ const SearchDiv = () => {
 
   const onSubmit: SubmitHandler<FieldValues> = async (data) => {
     console.log(data.text);
+    if (data.text) {
+      await SecureStore.setItemAsync("searchText", data.text);
+    }
     router.push({
       pathname: "../map",
       params: { query: data.text },

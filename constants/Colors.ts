@@ -12,6 +12,7 @@ export const background = '#375f6f'
 export const Colors = {
   light: {
     text: '#11181C',
+    textWhite: '#fff',
     background: '#fff',
     tint: tintColorLight,
     icon: '#687076',
@@ -21,11 +22,13 @@ export const Colors = {
   },
   dark: {
     text: '#ECEDEE',
+    textWhite: '#fff',
     background: '#151718',
     tint: tintColorDark,
     icon: '#9BA1A6',
     tabIconDefault: '#9BA1A6',
     tabIconSelected: tintColorDark,
+    errorText: '#FF0000',
   },
 };
 
