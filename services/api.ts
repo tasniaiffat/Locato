@@ -1,5 +1,5 @@
 import axios from "axios";
-import AsyncStorage from '@react-native-async-storage/async-storage';
+// import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // Create the Axios instance
 const api = axios.create({
@@ -9,17 +9,17 @@ const api = axios.create({
   },
 });
 
-api.interceptors.request.use(
-  async (config) => {
-    const token = await AsyncStorage.getItem('token'); // Get the token from AsyncStorage
-    if (token) {
-      config.headers['Authorization'] = `Bearer ${token}`; // Attach the token in Authorization header
-    }
-    return config;
-  },
-  (error) => {
-    return Promise.reject(error);
-  }
-);
+// api.interceptors.request.use(
+//   async (config) => {
+//     const token = await AsyncStorage.getItem('token'); // Get the token from AsyncStorage
+//     if (token) {
+//       config.headers['Authorization'] = `Bearer ${token}`; // Attach the token in Authorization header
+//     }
+//     return config;
+//   },
+//   (error) => {
+//     return Promise.reject(error);
+//   }
+// );
 
 export default api;

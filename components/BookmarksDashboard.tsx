@@ -2,7 +2,9 @@ import { colors } from '@/constants/Colors';
 import { useState } from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity } from 'react-native'
 import ServiceCard from './ServiceCard';
+import BookmarkCard from './BookmarkCard'
 import { AntDesign } from '@expo/vector-icons';
+import { Book } from 'lucide-react-native';
 
 const handleSeeAllPress = () => {
   console.log('See All bookmarks pressed')
@@ -10,7 +12,7 @@ const handleSeeAllPress = () => {
 
 
 const BookmarksDashboard = () => {
-  const [bookmarks, setBookmarks] = useState(Array.from({length: 5}, (_, i) => <ServiceCard text="Bookmark" key={i}/>))
+  const [bookmarks, setBookmarks] = useState(Array.from({length: 5}, (_, i) => <BookmarkCard text="Bookmark" key={i}/>))
   return (
     <View style={styles.container}>
         <Text style={styles.text}>Saved Services</Text>

@@ -1,14 +1,20 @@
-import { colors } from '@/constants/Colors';
-import { View, Text, StyleSheet } from 'react-native'
+import React from 'react';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import Icon from 'react-native-vector-icons/FontAwesome'; 
 
 const ServiceCard = ({ name, specialty, rating }: { name: string, specialty: string, rating: number }) => {
   const formattedRating = rating ? rating.toFixed(1) : 'N/A'; // Handle undefined rating
-  
+
   return (
     <View style={cardStyles.container}>
-        <Text style={cardStyles.specialtyText}>{specialty}</Text>
-        <Text style={cardStyles.text}>{name}</Text>   
-        <Text style={cardStyles.ratingText}>Rating: {formattedRating} ⭐</Text>
+      {/* Bookmark icon at the top right */}
+      <TouchableOpacity style={cardStyles.bookmarkButton}>
+        <Icon name="bookmark" size={20} color="#fff" />
+      </TouchableOpacity>
+
+      <Text style={cardStyles.specialtyText}>{specialty}</Text>
+      <Text style={cardStyles.text}>{name}</Text>
+      <Text style={cardStyles.ratingText}>Rating: {formattedRating} ⭐</Text>
     </View>
   );
 };
@@ -24,13 +30,13 @@ const cardStyles = StyleSheet.create({
     borderRadius: 20,
     padding: 10,
     justifyContent: 'center',
-    alignItems: 'left'
+    alignItems: 'left',
+    position: 'relative', // Add position relative to place the bookmark button inside the card
   },
   text: {
     color: "#2a323d",
     fontSize: 14,
     fontWeight: 'bold',
-    
   },
   specialtyText: {
     color: "#2a323d",
@@ -39,8 +45,14 @@ const cardStyles = StyleSheet.create({
     marginBottom: 20,
   },
   ratingText: {
-    color: colors.background,
+    color: '#fff', // Update to better contrast with background
     fontSize: 14,
-    fontWeight: 'normal'
-  }
+    fontWeight: 'normal',
+  },
+  // Style for the bookmark button
+  bookmarkButton: {
+    position: 'absolute', // Position the icon at the top-right corner
+    top: 10,
+    right: 10,
+  },
 });
