@@ -6,6 +6,7 @@ import BookmarksDashboard from '@/components/BookmarksDashboard'
 import ServicesNearby from '@/components/ServicesNearby'
 import { SpecialistType } from '@/types/SpecialistType'
 import { SelectedSpecialistContext } from '@/contexts/SelectedSpecialistContext'
+import RecommendedQueries from '@/components/RecommendedQueries'
 
 export default function Home() {
 
@@ -15,7 +16,9 @@ export default function Home() {
       showsVerticalScrollIndicator={false}>
       {/* <ImageBackground src=""/> */}
         <SearchDiv />
-        <ServicesNearby />
+        <RecommendedQueries />
+        <ServicesNearby 
+          />
         <BookmarksDashboard />
     </ScrollView>
   )
