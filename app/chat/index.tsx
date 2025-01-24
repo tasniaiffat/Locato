@@ -21,7 +21,7 @@ const ChatApp = () => {
   const connect = () => {
     if (isConnected.current) return; // Prevent multiple connections
 
-    const socket = new SockJS('http://10.33.19.104:8080/chat');
+    const socket = new SockJS('http://172.20.10.3:8080/chat');
     stompClient.current = Stomp.over(socket);
     stompClient.current.connect({}, (frame) => {
       console.log('Connected: ' + frame);
