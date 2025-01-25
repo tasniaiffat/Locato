@@ -21,6 +21,7 @@ import MyLink from "@/components/MyLink";
 import MyText from "@/components/MyText";
 import api from "@/services/api";
 import { showAlert } from "@/services/alertUtil";
+import { useLocation } from "@/hooks/useLocation";
 
 
 const backgroundimage:ImageSourcePropType = require("@/assets/images/locato_bg.jpg");
@@ -42,6 +43,7 @@ const Index = () => {
     console.log(email);
     console.log(password);
     console.log(confirmpassword);
+    const {location} = useLocation();
     if (!firstname || !lastname || !email || !password) {
       showAlert("Error", "Please fill in all required fields.");
       console.log("Please fill in all required fields.");
@@ -59,8 +61,8 @@ const Index = () => {
         password,
         name: `${firstname} ${lastname}`,
         zoneId: parseInt(zoneId, 10),
-        locationLatitude: parseFloat(locationLatitude),
-        locationLongitude: parseFloat(locationLongitude),
+        locationLatitude: location?.coords.latitude || parseFloat("0.0"),
+        locationLongitude: location?.coords.longitude || parseFloat("0.0"),
       };
 
       const response = await api.post("/auth/register_user", requestBody);

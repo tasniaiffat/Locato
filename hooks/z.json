@@ -1,0 +1,79 @@
+{
+    "date": 1737740775732,
+    "request": {
+      "trigger": {
+        "remoteMessage": {
+          "originalPriority": 2,
+          "sentTime": 1737740775732,
+          "notification": {
+            "usesDefaultVibrateSettings": false,
+            "color": null,
+            "channelId": null,
+            "visibility": null,
+            "sound": null,
+            "tag": null,
+            "bodyLocalizationArgs": null,
+            "imageUrl": null,
+            "title": "New Service Request",
+            "ticker": null,
+            "eventTime": null,
+            "body": "A user has requested a service. Click to view the details.",
+            "titleLocalizationKey": null,
+            "notificationPriority": null,
+            "icon": null,
+            "usesDefaultLightSettings": false,
+            "sticky": false,
+            "link": null,
+            "titleLocalizationArgs": null,
+            "bodyLocalizationKey": null,
+            "usesDefaultSound": false,
+            "clickAction": null,
+            "localOnly": false,
+            "lightSettings": null,
+            "notificationCount": null
+          },
+          "data": {
+            "message": "A user has requested a service. Click to view the details.",
+            "title": "New Service Request",
+            "body": "{\"serviceRequestId\":37,\"route\":\"/incoming-request\",\"userEmail\":\"test@gmail.com\",\"jobDescription\":\"Water pipe broke\",\"jobType\":\"Plumber\",\"appointmentDataTime\":[2025,1,24,10,20]}",
+            "scopeKey": "@sdp_project/locato",
+            "experienceId": "@sdp_project/locato",
+            "projectId": "058782dc-3c1d-4c84-aa00-5d29a1ece024"
+          },
+          "to": null,
+          "ttl": 2419200,
+          "collapseKey": "com.jamal_uddin.locato",
+          "messageType": null,
+          "priority": 2,
+          "from": "618275479206",
+          "messageId": "0:1737740775741245%b5c1847bb5c1847b"
+        },
+        "type": "push"
+      },
+      "content": {
+        "autoDismiss": true,
+        "body": "A user has requested a service. Click to view the details.",
+        "sound": "default",
+        "sticky": false,
+        "title": "New Service Request",
+        "badge": null,
+        "priority": "default",
+        "subtitle": null,
+        "data": {
+          "serviceRequestId": 37,
+          "route": "/incoming-request",
+          "userEmail": "test@gmail.com",
+          "jobDescription": "Water pipe broke",
+          "jobType": "Plumber",
+          "appointmentDataTime": [
+            2025,
+            1,
+            24,
+            10,
+            20
+          ]
+        }
+      },
+      "identifier": "0:1737740775741245%b5c1847bb5c1847b"
+    }
+  }

@@ -9,6 +9,7 @@ import { router } from 'expo-router';
 
 
 
+
 const SpecialistCard = ({specialist}:{
   specialist: SpecialistType
 }) => (
@@ -58,7 +59,8 @@ const SpecalistDetailsCard = ({specialist}:{
 
     <View style={specialistDetailsStyles.infoView}>
       <Text style={specialistDetailsStyles.heading}>Specialties:</Text>
-      <Text style={specialistDetailsStyles.subtitle}>{specialist.specialties.join(', ')}</Text>
+      <Text style={specialistDetailsStyles.subtitle}>{specialist.specialties.map(specialty => specialty.title).join(', ')
+      }</Text>
     </View>
 
     <View style={specialistDetailsStyles.infoView}>
@@ -199,7 +201,7 @@ const styles = StyleSheet.create({
   sheetContainer: {
     width: '100%',
     height: '100%',
-    overflowY: 'hidden',
+    overflow: 'hidden',
     position: 'relative',
     // backgroundColor: 'red',
   },

@@ -3,5 +3,5 @@ export type ServiceRequestType = {
     userEmail: string;
     jobType: string;
     jobDescription: string;
-    appointmentDateTime: string;
+    appointmentDataTime: number[];
 }

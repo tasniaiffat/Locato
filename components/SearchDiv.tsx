@@ -1,5 +1,5 @@
 import { colors, grey, lightblue } from "@/constants/Colors";
-import { useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import {
   View,
   Text,
@@ -64,58 +64,15 @@ const SearchDiv = () => {
               placeholderTextColor={grey}
               value={value}
               onBlur={onBlur}
-              onChangeText={onChange}
+              onChangeText={(text) => {
+                onChange(text);
+              }}
               onSubmitEditing={handleSubmit(onSubmit)}
               returnKeyType="search"
             />
           )}
         />
         {errors.text && <Text style={styles.errorText}>This is required.</Text>}
-
-        {/* Modal for displaying response data */}
-        {/* <Modal
-          animationType="slide"
-          transparent={true}
-          visible={isModalVisible}
-          onRequestClose={() => setIsModalVisible(false)}
-        >
-          <View style={styles.modalOverlay}>
-            <View style={styles.modalContainer}>
-              <Text style={styles.modalTitle}>Search Results</Text>
-
-              {responseData && responseData.content && responseData.content.length > 0 ? (
-                <View >
-                  {responseData.content.map((item: any, index: number) => (
-                    <View key={index} style={styles.resultItem}>
-                      <Text >Name: {item.name}</Text>
-                      <Text >Email: {item.email}</Text>
-                      {item.specialties && item.specialties.length > 0 ? (
-                        <View>
-                          <Text>Specialties:</Text>
-                          {item.specialties.map((specialty: any, i: number) => (
-                            <Text key={i}>
-                               • {specialty.title}
-                            </Text>
-                          ))}
-                        </View>
-                      ) : (
-                        <Text>No specialties listed</Text>
-                      )}
-                    </View>
-                  ))}
-                </View>
-              ) : (
-                <Text>No results found.</Text>
-              )}
-              <TouchableOpacity
-                style={styles.closeButton}
-                onPress={() => setIsModalVisible(false)}
-              >
-                <Text style={styles.closeButtonText}>Close</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </Modal> */}
       </View>
     </ImageBackground>
   );

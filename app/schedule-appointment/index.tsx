@@ -35,12 +35,14 @@ const ScheduleAppointment = () => {
     formState: { errors },
   } = useForm();
 
-  const [dateTime, setDateTime] = useState<Date | null>(new Date());
+  const [dateTime, setDateTime] = useState<Date>(new Date());
   const [show, setShow] = useState(false);
   const { selectedSpecialist } = useSelectedSpecialist();
   console.log(selectedSpecialist);
 
+  
 
+  
   const requestService = async () => {
     try {
       const requestBody = {
@@ -48,7 +50,7 @@ const ScheduleAppointment = () => {
         serviceProviderId: selectedSpecialist?.id,
         jobType: await SecureStore.getItemAsync("jobType") || "",
         jobDescription: await SecureStore.getItemAsync("searchText") || "",
-        appointmentDataTime: dateTime?.toISOString(),
+        appointmentDataTime: new Date(dateTime?.toISOString()),
       }
       console.log("Request Body", requestBody);
       
@@ -64,7 +66,7 @@ const ScheduleAppointment = () => {
 
   const handleDateChange = (event: any, selectedDate: Date | undefined) => {
     setShow(false);
-    if (selectedDate) {
+    if (event.type === "set" && selectedDate) {
       setDateTime(selectedDate);
     } else {
       Alert.alert("Error", "Please select a valid date and time");
@@ -107,8 +109,8 @@ const ScheduleAppointment = () => {
             <Text style={styles.statText}>Projects Completed</Text>
           </View>
           <View style={styles.statBox}>
-            <Text style={styles.statFeatureText}>৳ 31,000</Text>
-            <Text style={styles.statText}>Earned Last Month</Text>
+            <Text style={styles.statFeatureText}>{selectedSpecialist?.rating}/5</Text>
+            <Text style={styles.statText}>Rating</Text>
           </View>
         </View>
 
@@ -130,12 +132,12 @@ const ScheduleAppointment = () => {
               {show && (
                 <DateTimePicker
                   testID="dateTimePicker"
-                  value={dateTime || new Date()}
+                  value={dateTime}
                   mode="time"
                   display="default"
                   onChange={(event, selectedDate) => {
-                    handleDateChange(event, selectedDate);
-                    onChange(selectedDate); // Update form value
+                    handleDateChange(event,selectedDate);
+                    onChange(dateTime); // Update form value
                   }}
                 />
               )}
@@ -168,7 +170,7 @@ const ScheduleAppointment = () => {
           onPress={handleSubmit(onSubmit)}
         >
       
-          <Text style={styles.submitText}>Chat Now</Text>
+          <Text style={styles.submitText}>Request Appointment</Text>
         </TouchableOpacity>
       </SafeAreaView>
     </ImageBackground>
