@@ -33,7 +33,7 @@ const submitAssistanceRequest = async (
       return;
     }
     const uri = encodeURI(
-      `/sp/SpecialistRadius?givenText=${data}&userId=${userId}&latitude=${latitude}&longitude=${longitude}&radius=100&page=0&size=10`
+      `/sp/SpecialistRadius?givenText=${data}&userId=${userId}&latitude=${latitude}&longitude=${longitude}&count=5&page=0&size=10`
     );
 
     const response = await api.get(uri);
