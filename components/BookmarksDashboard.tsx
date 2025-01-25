@@ -1,7 +1,7 @@
 import { colors } from '@/constants/Colors';
 import { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, Alert } from 'react-native';
-import BookmarkCard from './BookmarkCard';
+import BookmarkCard from './BookmarkCard'; // Assuming BookmarkCard is set up to display service info
 import { AntDesign } from '@expo/vector-icons';
 import api from '@/services/api'; // Import the API service
 import * as SecureStore from 'expo-secure-store'; // Import Secure Store
@@ -25,12 +25,8 @@ const BookmarksDashboard = () => {
       } else {
         console.log("Token", token);
       }
-      console.log(`/users/favorites?userId=${token}`);
-      
+
       const response = await api.get(`/users/favorites?userId=${token}`);
-      console.log( "hello");
-      
-      console.log(response);
       setBookmarks(response.data); // Set the fetched favorites to state
     } catch (error) {
       console.error('Error fetching favorites:', error);
@@ -65,7 +61,9 @@ const BookmarksDashboard = () => {
         renderItem={({ item }) => (
           <BookmarkCard
             key={item.id} // Assuming each item has a unique `id`
-            text={item.name} // Update this based on your API response structure
+            name={item.name} // Service provider name
+            specialty={item.specialties.length > 0 ? item.specialties.join(', ') : 'Expert'} // Specialties
+            rating={item.rating || 0} // Rating (default to 0 if not provided)
           />
         )}
         horizontal={true}

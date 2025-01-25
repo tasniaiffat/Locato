@@ -95,7 +95,7 @@ const ServicesNearby = () => {
           renderItem={({ item }) => (
             <ServiceCard
               name={item.name}
-              specialty={item.specialties.map((spec) => spec.title).join(", ")}
+              specialty={item.specialties.length > 0 ? item.specialties.map((spec) => spec.title).join(", "): 'Expert'}
               rating={item.rating || 0}
               bookmarked={bookmarkedIds.has(item.id)} // Check if bookmarked
               onBookmarkPress={() => handleBookmarkToggle(item.id)} // Handle bookmark

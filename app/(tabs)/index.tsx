@@ -19,7 +19,7 @@ export default function Home() {
         <RecommendedQueries />
         <ServicesNearby 
           />
-        <BookmarksDashboard />
+        {/* <BookmarksDashboard /> */}
     </ScrollView>
   )
 }
