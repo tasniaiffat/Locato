@@ -1,3 +1,4 @@
+import { MessageType } from '@/types/MessageType';
 import React, { useState } from 'react';
 import {
   View,
@@ -32,7 +33,7 @@ const Chats = () => {
     setNewMessage('');
   };
 
-  const renderMessage = ({ item }) => (
+  const renderMessage = ({ item }:{item:MessageType}) => (
     <View
       style={
         item.sender === 'self'

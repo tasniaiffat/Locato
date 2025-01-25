@@ -201,7 +201,7 @@ const styles = StyleSheet.create({
   sheetContainer: {
     width: '100%',
     height: '100%',
-    overflowY: 'hidden',
+    overflow: 'hidden',
     position: 'relative',
     // backgroundColor: 'red',
   },

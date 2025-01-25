@@ -77,24 +77,30 @@ export const usePushNotifications = (): PushNotificationState => {
         });
 
         responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
-            const { data } = response.notification.request.content;
-
-            if (data) {
-                console.log("Data from notification: ", data);
+            try {
+                console.log("Notification response received: ", JSON.stringify(response, null, 2));
                 
-                const { route, ...params } = data;
-                router.push({
-                    pathname: route || "",
-                    params: {
-                        data:JSON.stringify(params) || ""
-                    },
-                });
-                console.log(`Navigating to: ${route}, with params:`, params);
+                const { data } = response.notification.request.content;
+    
+                if (data) {
+                    console.log("Data from notification: ", data);
+                    
+                    const { route, ...params } = data || {};
+                    router.push({
+                        pathname: route || "/(tabs)/",
+                        params: {
+                            data:JSON.stringify(params) || ""
+                        },
+                    });
+                    console.log(`Navigating to: ${route}, with params:`, params);
+                }
+                else {
+                    console.log("No valid URL found in notification data.");
+                }
+                console.log(response);
+            } catch (error) {
+                console.error("Error handling notification response: ", error);
             }
-            else {
-                console.log("No valid URL found in notification data.");
-            }
-            console.log(response);
         });
 
         return () => {

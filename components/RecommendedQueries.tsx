@@ -39,7 +39,7 @@ const RecommendedQueries = () => {
             <View 
               key={index}
               style={{ padding: 10, backgroundColor: colors.background, borderRadius: 10, margin: 5 }}>
-              <Text key={index}>{query}</Text>
+              <Text key={index} style={{color:colors.tabIconDefault}}>{query}</Text>
             </View>
           ))}
         </ScrollView>
