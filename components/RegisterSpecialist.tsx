@@ -263,21 +263,6 @@ const RegisterSpecialist = () => {
         )}
       />
 
-      <Text style={styles.label}>Rating</Text>
-      <Controller
-        control={control}
-        name="rating"
-        render={({ field: { onChange, value } }) => (
-          <TextInput
-            style={styles.input}
-            placeholder="Enter rating (out of 5)"
-            keyboardType="numeric"
-            value={value ? value.toString() : ""}
-            onChangeText={(text) => onChange(Number(text))}
-          />
-        )}
-      />
-
       <Text style={styles.label}>Certifications</Text>
       <Controller
         control={control}
