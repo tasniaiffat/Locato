@@ -46,7 +46,7 @@ const RecentChats = ({ navigation }) => {
         onPress={() => navigation.navigate('ChatScreen', { chatId: item.id })}
       >
         <View style={styles.chatDetails}>
-          <Text style={styles.chatName}>{otherUser.name}</Text>
+          <Text style={styles.chatName}>{otherUser.name}-{otherUser.email}</Text>
           <Text style={styles.lastMessage}>{lastMessage}</Text>
         </View>
         <Text style={styles.time}>
