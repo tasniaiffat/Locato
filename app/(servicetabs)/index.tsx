@@ -3,12 +3,16 @@ import { View, Text, StyleSheet, ScrollView, ActivityIndicator } from "react-nat
 import * as SecureStore from "expo-secure-store"
 import { grey, lightblue } from "@/constants/Colors"
 import api from "@/services/api"
-import type { SpecialistType } from "@/types/SpecialistType"
+import { SpecialistRole, type SpecialistType } from "@/types/SpecialistType"
+import axios from "axios"
+import { useLocation } from "@/hooks/useLocation"
 
 const Dashboard = () => {
   const [specialistData, setSpecialistData] = useState<SpecialistType | null>(null)
   const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null) 
+  const [error, setError] = useState<string | null>(null);
+  const [address, setAddress] = useState<string | null>(null);
+  const {location} = useLocation();
 
   const fetchSpecialistData = async () => {
     try {
@@ -16,8 +20,12 @@ const Dashboard = () => {
       if (!userId) {
         throw new Error("User ID not found in SecureStore")
       }
-      const response = await api.get(`/sp/${userId}`)
-      setSpecialistData(response.data)
+      const response = await api.get(`/sp/${userId}`);
+      setSpecialistData(response.data);
+      const addressResponse = await axios.get(`${process.env.EXPO_PUBLIC_LOCATIONIQ_URL}/reverse?key=${process.env.EXPO_PUBLIC_LOCATIONIQ_API_KEY}&lat=${location?.coords.latitude}&lon=${location?.coords.longitude}&format=json&`);
+      console.log("Address", addressResponse.data.display_name);
+    
+      setAddress(addressResponse.data.display_name);
     } catch (err) {
       setError("Failed to fetch specialist data")
       console.error(err)
@@ -63,7 +71,7 @@ const Dashboard = () => {
         <Text style={styles.infoHeader}>Specialist Information</Text>
         <Text style={styles.infoText}>Email: {specialistData.email}</Text>
         <Text style={styles.infoText}>Rating: {specialistData.rating.toFixed(1)}/5</Text>
-        <Text style={styles.infoText}>Role: {specialistData.role}</Text>
+        <Text style={styles.infoText}>Role: {specialistData.role === SpecialistRole.ROLE_SERVICE_PROVIDER? "Service Provider": ""}</Text>
         <Text style={styles.infoText}>Zone: {specialistData.zone.title}</Text>
         <Text style={styles.infoText}>Active: {specialistData.active ? "Yes" : "No"}</Text>
       </View>
@@ -75,8 +83,9 @@ const Dashboard = () => {
 
       <View style={styles.locationSection}>
         <Text style={styles.infoHeader}>Location</Text>
-        <Text style={styles.infoText}>Latitude: {specialistData.locationLatitude}</Text>
-        <Text style={styles.infoText}>Longitude: {specialistData.locationLongitude}</Text>
+        <Text style={styles.infoText}>Address: {address}</Text>
+        {/* <Text style={styles.infoText}>Latitude: {specialistData.locationLatitude}</Text>
+        <Text style={styles.infoText}>Longitude: {specialistData.locationLongitude}</Text> */}
       </View>
     </ScrollView>
   )
