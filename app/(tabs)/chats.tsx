@@ -43,18 +43,13 @@ const RecentChats = () => {
     const otherUser = item.user1.id !== item.user2.id ? item.user1 : item.user2; // Show the other user's name
 
     const handleChatPress = async () => {
-      const token = await SecureStore.getItemAsync('userId');
-      if (!token) {
-        Alert.alert('Error', 'Authentication token not found.');
-        return;
-      }
 
       const otherUserEmail = otherUser.email;
 
       // Navigate to Chat screen and pass otherUserEmail and userId as query params
       router.push({
         pathname: '/chat-user',
-        params: { otherUserEmail, userId: token },
+        params: { otherUserEmail },
       });
     };
 

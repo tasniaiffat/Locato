@@ -74,7 +74,7 @@ const Index = () => {
       showAlert("Error", "Please fill in all required fields.");
       return;
     }
-
+  
     try {
       const response = await api.post("/auth/login", { email, password });
       if (response.status === 200) {
@@ -88,7 +88,10 @@ const Index = () => {
         if (response.data?.userId) {
           await SecureStore.setItemAsync("userId", JSON.stringify(response.data.userId));
         }
-
+  
+        // Store the email
+        await SecureStore.setItemAsync("email", email);
+  
         if (expoPushToken) {
           pushExpoToken(expoPushToken);
         }
@@ -100,6 +103,7 @@ const Index = () => {
       showAlert("Login Failed", "Email and Password did not match");
     }
   };
+  
 
   return (
     // Dismiss keyboard on tap outside

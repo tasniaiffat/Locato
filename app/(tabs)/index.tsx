@@ -7,6 +7,7 @@ import ServicesNearby from '@/components/ServicesNearby'
 import { SpecialistType } from '@/types/SpecialistType'
 import { SelectedSpecialistContext } from '@/contexts/SelectedSpecialistContext'
 import RecommendedQueries from '@/components/RecommendedQueries'
+import LocatoSubscription from '@/components/SubscriptionSection'
 
 export default function Home() {
 
@@ -17,9 +18,8 @@ export default function Home() {
       {/* <ImageBackground src=""/> */}
         <SearchDiv />
         <RecommendedQueries />
-        <ServicesNearby 
-          />
-        {/* <BookmarksDashboard /> */}
+        <ServicesNearby />
+        <LocatoSubscription/>
     </ScrollView>
   )
 }
