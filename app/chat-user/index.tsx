@@ -1,239 +1,195 @@
-import { useLocalSearchParams, useRouter } from "expo-router"
-import React, { useState, useEffect, useRef } from "react"
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
-  FlatList,
   TextInput,
   TouchableOpacity,
+  FlatList,
   StyleSheet,
+  SafeAreaView,
   KeyboardAvoidingView,
   Platform,
-  Animated,
-} from "react-native"
-import { SafeAreaView } from "react-native-safe-area-context"
-import { Ionicons } from "@expo/vector-icons"
-import api from "@/services/api"
-import { grey } from "@/constants/Colors"
-import SockJS from 'sockjs-client';
-import Stomp from '@stomp/stompjs';
+} from 'react-native';
+import * as SecureStore from 'expo-secure-store';
+import axios from 'axios';
+import { useLocalSearchParams } from 'expo-router';
 
-const Chats = () => {
-  const router = useRouter()
-  const { otherUserEmail, userId } = useLocalSearchParams()
-  const [messages, setMessages] = useState([])
-  const [newMessage, setNewMessage] = useState("")
-  const flatListRef = useRef(null)
-  const fadeAnim = useRef(new Animated.Value(0)).current
-  const websocketRef = useRef(null)
-  const [stompClient, setStompClient] = useState(null);
+// Types
+interface Message {
+  id?: number;
+  content: string;
+  senderEmail: string;
+  timestamp?: string;
+}
 
+interface ChatScreenProps {
+  route: {
+    params: {
+      receiverEmail: string;
+    };
+  };
+}
+
+const ChatScreen: React.FC<ChatScreenProps> = ({ route }) => {
+  const { otherUserEmail, userId } = useLocalSearchParams();
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [inputMessage, setInputMessage] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+
+  // Fetch Chat History
   useEffect(() => {
-    // Create SockJS and Stomp client
-    const socket = new SockJS('http://192.168.0.137:8080/ws');
-    const client = Stomp.over(socket);
+    const fetchMessages = async () => {
+      try {
+        const token = await SecureStore.getItemAsync('jwt');
+        if (!token) {
+          console.error('Authentication token not found');
+          return;
+        }
 
-    client.connect({}, (frame) => {
-      console.log('Connected: ', frame);
-      
-      // Subscribe to messages
-      client.subscribe('/topic/public', (message) => {
-        const receivedMessage = JSON.parse(message.body);
-        
-        // Process and add message to state
-        const formattedMessage = {
-          id: receivedMessage.id || Date.now().toString(),
-          content: receivedMessage.content,
-          senderEmail: receivedMessage.senderEmail,
-          receiverEmail: receivedMessage.receiverEmail,
-          timestamp: new Date(receivedMessage.timestamp).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
-        };
-
-        setMessages((prevMessages) => [...prevMessages, formattedMessage]);
-      });
-    }, (error) => {
-      console.error('Connection error: ', error);
-    });
-
-    setStompClient(client);
-
-    // Cleanup
-    return () => {
-      if (client) {
-        client.disconnect();
+        setIsLoading(true);
+        const response = await axios.get(
+          encodeURI(`http://192.168.0.105:8080/chat/messages/${otherUserEmail}`),
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+        setMessages(response.data);
+      } catch (error) {
+        console.error('Error fetching chat history:', error);
+      } finally {
+        setIsLoading(false);
       }
     };
-  }, []);
 
-  const sendMessage = () => {
-    if (!newMessage.trim() || !stompClient) return;
+    fetchMessages();
+  }, [otherUserEmail]);
 
-    stompClient.send("/app/chat.sendMessage", {}, JSON.stringify({
-      type: 'CHAT_MESSAGE',
-      content: newMessage,
-      senderEmail: "self", // Replace with actual sender email
-      receiverEmail: otherUserEmail,
-      timestamp: new Date().toISOString()
-    }));
+  // Send Message
+  const sendMessage = async () => {
+    if (!inputMessage.trim()) return;
 
-    // Optimistic UI update
-    const optimisticMessage = {
-      id: Date.now().toString(),
-      content: newMessage,
-      senderEmail: "self",
-      receiverEmail: otherUserEmail,
-      timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
-    };
-    
-    setMessages((prevMessages) => [...prevMessages, optimisticMessage]);
-    setNewMessage("");
-    flatListRef.current?.scrollToEnd({ animated: true });
-  }
+    try {
+      const token = await SecureStore.getItemAsync('jwt');
+      if (!token) {
+        console.error('Authentication token not found');
+        return;
+      }
 
-  const renderMessage = ({ item, index }) => (
-    <Animated.View
-      style={[item.senderEmail === "self" ? styles.selfBubble : styles.otherBubble, { opacity: fadeAnim }]}
+      const messagePayload = {
+        receiverEmail: otherUserEmail,
+        content: inputMessage,
+      };
+
+      // Send message via API
+      await axios.post(
+        `http://192.168.0.105:8080/chat/send/${userId}`,
+        messagePayload,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      // Update local messages
+      setMessages((prevMessages) => [
+        ...prevMessages,
+        { ...messagePayload, senderEmail: userId as string },
+      ]);
+      setInputMessage('');
+    } catch (error) {
+      console.error('Error sending message:', error);
+    }
+  };
+
+  // Render Message Item
+  const renderMessage = ({ item }: { item: Message }) => (
+    <View
+      style={[
+        styles.messageBubble,
+        item.senderEmail === otherUserEmail ? styles.receivedMessage : styles.sentMessage,
+      ]}
     >
       <Text style={styles.messageText}>{item.content}</Text>
-      <Text style={styles.timestamp}>{item.timestamp}</Text>
-    </Animated.View>
-  )
+    </View>
+  );
 
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <SafeAreaView style={styles.container}>
       <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={styles.container}
-        keyboardVerticalOffset={Platform.OS === "ios" ? 60 : 0}
       >
-        <View style={styles.header}>
-          <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
-            <Ionicons name="arrow-back" size={24} color="#007AFF" />
-          </TouchableOpacity>
-          <Text style={styles.headerTitle}>{otherUserEmail}</Text>
-        </View>
-        {messages.length > 0 ? (
+        {isLoading ? (
+          <Text>Loading...</Text>
+        ) : (
           <FlatList
-            ref={flatListRef}
             data={messages}
             renderItem={renderMessage}
-            keyExtractor={(item) => item.id}
+            keyExtractor={(item, index) => item.id?.toString() || index.toString()}
             contentContainerStyle={styles.messageList}
           />
-        ) : (
-          <View style={styles.emptyState}>
-            <Text style={styles.emptyStateText}>No messages yet</Text>
-          </View>
         )}
+
         <View style={styles.inputContainer}>
           <TextInput
-            style={styles.input}
+            value={inputMessage}
+            onChangeText={setInputMessage}
             placeholder="Type a message"
-            value={newMessage}
-            onChangeText={setNewMessage}
-            placeholderTextColor="#999"
+            style={styles.input}
           />
           <TouchableOpacity onPress={sendMessage} style={styles.sendButton}>
-            <Ionicons name="send" size={24} color="#FFFFFF" />
+            <Text style={styles.sendButtonText}>Send</Text>
           </TouchableOpacity>
         </View>
       </KeyboardAvoidingView>
     </SafeAreaView>
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-    backgroundColor: "#F0F2F5",
-  },
   container: {
     flex: 1,
-  },
-  header: {
-    flexDirection: "row",
-    alignItems: "center",
-    padding: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: "#E5E5E5",
-    backgroundColor: "#FFFFFF",
-  },
-  backButton: {
-    padding: 5,
-  },
-  headerTitle: {
-    fontSize: 18,
-    fontWeight: "bold",
-    marginLeft: 10,
+    backgroundColor: '#F5F5F5',
   },
   messageList: {
-    paddingHorizontal: 15,
-    paddingVertical: 10,
+    paddingHorizontal: 10,
+    paddingVertical: 15,
   },
-  emptyState: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
+  messageBubble: {
+    maxWidth: '80%',
+    padding: 10,
+    borderRadius: 10,
+    marginVertical: 5,
   },
-  emptyStateText: {
+  sentMessage: {
+    backgroundColor: '#DCF8C6',
+    alignSelf: 'flex-end',
+  },
+  receivedMessage: {
+    backgroundColor: '#FFFFFF',
+    alignSelf: 'flex-start',
+  },
+  messageText: {
     fontSize: 16,
-    color: "#999",
   },
   inputContainer: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
     padding: 10,
-    backgroundColor: "#FFFFFF",
-    borderTopWidth: 1,
-    borderTopColor: "#E5E5E5",
+    backgroundColor: 'white',
   },
   input: {
     flex: 1,
-    height: 40,
-    borderColor: "#E5E5E5",
     borderWidth: 1,
+    borderColor: '#CCCCCC',
     borderRadius: 20,
     paddingHorizontal: 15,
+    paddingVertical: 10,
     marginRight: 10,
-    fontSize: 16,
   },
   sendButton: {
-    backgroundColor: "#007AFF",
-    width: 40,
-    height: 40,
+    justifyContent: 'center',
+    backgroundColor: '#007BFF',
     borderRadius: 20,
-    justifyContent: "center",
-    alignItems: "center",
+    paddingHorizontal: 15,
   },
-  selfBubble: {
-    backgroundColor: "#007AFF",
-    alignSelf: "flex-end",
-    borderRadius: 20,
-    borderBottomRightRadius: 5,
-    marginVertical: 5,
-    maxWidth: "80%",
-    padding: 10,
+  sendButtonText: {
+    color: 'white',
   },
-  otherBubble: {
-    backgroundColor: grey,
-    alignSelf: "flex-start",
-    borderRadius: 20,
-    borderBottomLeftRadius: 5,
-    marginVertical: 5,
-    maxWidth: "80%",
-    padding: 10,
-  },
-  messageText: {
-    color: "#FFFFFF",
-    fontSize: 16,
-  },
-  timestamp: {
-    fontSize: 12,
-    color: "#FFFFFF80",
-    marginTop: 5,
-    textAlign: "right",
-  },
-})
+});
 
-export default Chats
-
+export default ChatScreen;

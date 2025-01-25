@@ -4,6 +4,7 @@ import { View, Text, FlatList, StyleSheet, TouchableOpacity, Alert } from 'react
 import api from '@/services/api'; // Ensure this is set up with axios
 import * as SecureStore from 'expo-secure-store';
 import { useRouter } from 'expo-router';
+import axios from 'axios';
 
 const RecentChats = () => {
   const [chats, setChats] = useState([]);
@@ -19,13 +20,11 @@ const RecentChats = () => {
         return;
       }
 
+      
       const response = await api.get(`/api/inboxes/user/{userId}?userId=${token}`);
 
-      if (response.status === 200) {
-        setChats(response.data); // Assuming the response has a list of chats
-      } else {
-        Alert.alert('Error', 'Failed to fetch chats.');
-      }
+     
+      setChats(response.data); // Assuming the response has a 
     } catch (error) {
       Alert.alert('Error', 'Something went wrong. Please try again later.');
       console.error(error);
