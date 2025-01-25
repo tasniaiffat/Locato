@@ -8,7 +8,7 @@ import type { SpecialistType } from "@/types/SpecialistType"
 const Dashboard = () => {
   const [specialistData, setSpecialistData] = useState<SpecialistType | null>(null)
   const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
+  const [error, setError] = useState<string | null>(null) 
 
   const fetchSpecialistData = async () => {
     try {

@@ -1,15 +1,34 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import Icon from 'react-native-vector-icons/FontAwesome'; 
+import Icon from 'react-native-vector-icons/FontAwesome';
 
-const ServiceCard = ({ name, specialty, rating }: { name: string, specialty: string, rating: number }) => {
+const ServiceCard = ({
+  name,
+  specialty,
+  rating,
+  bookmarked,
+  onBookmarkPress, // Pass a function from the parent
+}: {
+  name: string;
+  specialty: string;
+  rating: number;
+  bookmarked: boolean;
+  onBookmarkPress: () => void; // Function for bookmark handling
+}) => {
   const formattedRating = rating ? rating.toFixed(1) : 'N/A'; // Handle undefined rating
 
   return (
     <View style={cardStyles.container}>
       {/* Bookmark icon at the top right */}
-      <TouchableOpacity style={cardStyles.bookmarkButton}>
-        <Icon name="bookmark" size={20} color="#fff" />
+      <TouchableOpacity
+        style={cardStyles.bookmarkButton}
+        onPress={onBookmarkPress} // Call the passed function
+      >
+        <Icon
+          name="bookmark"
+          size={20}
+          color={bookmarked ? '#FFD700' : '#fff'} // Highlight if bookmarked
+        />
       </TouchableOpacity>
 
       <Text style={cardStyles.specialtyText}>{specialty}</Text>
@@ -49,9 +68,8 @@ const cardStyles = StyleSheet.create({
     fontSize: 14,
     fontWeight: 'normal',
   },
-  // Style for the bookmark button
   bookmarkButton: {
-    position: 'absolute', // Position the icon at the top-right corner
+    position: 'absolute',
     top: 10,
     right: 10,
   },

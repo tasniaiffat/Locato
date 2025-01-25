@@ -8,8 +8,6 @@ import { colors } from "@/constants/Colors"
 import { UserType } from "@/types/UserType"
 import axios from "axios"
 
-
-
 const IncomingRequest = () => {
   const [serviceRequest, setServiceRequest] = useState<ServiceRequestType | null>(null)
   const { data } = useLocalSearchParams();

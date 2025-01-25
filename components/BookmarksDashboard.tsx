@@ -4,6 +4,7 @@ import { View, Text, StyleSheet, FlatList, TouchableOpacity, Alert } from 'react
 import BookmarkCard from './BookmarkCard';
 import { AntDesign } from '@expo/vector-icons';
 import api from '@/services/api'; // Import the API service
+import * as SecureStore from 'expo-secure-store'; // Import Secure Store
 
 const handleSeeAllPress = () => {
   console.log('See All bookmarks pressed');
@@ -16,13 +17,26 @@ const BookmarksDashboard = () => {
   // Function to fetch favorite services from the API
   const fetchFavorites = async () => {
     try {
-      const response = await api.get('/users/favorites');  // Using the api service
-      setBookmarks(response.data);  // Set the fetched favorites to state
-      setLoading(false);  // Stop loading
+      const token = await SecureStore.getItemAsync("userId"); // Fetch the token from Secure Store
+      if (!token) {
+        Alert.alert('Error', 'Authentication token not found.');
+        setLoading(false);
+        return;
+      } else {
+        console.log("Token", token);
+      }
+      console.log(`/users/favorites?userId=${token}`);
+      
+      const response = await api.get(`/users/favorites?userId=${token}`);
+      console.log( "hello");
+      
+      console.log(response);
+      setBookmarks(response.data); // Set the fetched favorites to state
     } catch (error) {
-      setLoading(false);  // Stop loading
       console.error('Error fetching favorites:', error);
       Alert.alert('Error', 'Failed to fetch favorites.');
+    } finally {
+      setLoading(false); // Stop loading in both success and failure cases
     }
   };
 
@@ -40,25 +54,30 @@ const BookmarksDashboard = () => {
     );
   }
 
+  // Only display the first 5 bookmarks
+  const displayedBookmarks = bookmarks.slice(0, 5);
+
   return (
     <View style={styles.container}>
       <Text style={styles.text}>Saved Services</Text>
       <FlatList
-        data={bookmarks}
+        data={displayedBookmarks}
         renderItem={({ item }) => (
           <BookmarkCard
-            key={item.id}  // Assuming each item has a unique `id`
-            text={item.name}  // Update this based on your API response structure
+            key={item.id} // Assuming each item has a unique `id`
+            text={item.name} // Update this based on your API response structure
           />
         )}
         horizontal={true}
         keyExtractor={(item) => item.id.toString()}
-        ListFooterComponent={() => (
-          <TouchableOpacity style={styles.seeAllButton} onPress={handleSeeAllPress}>
-            <Text style={styles.seeAllText}>See All</Text>
-            <AntDesign name="right" size={24} color={colors.tint} />
-          </TouchableOpacity>
-        )}
+        ListFooterComponent={() =>
+          bookmarks.length > 5 ? (
+            <TouchableOpacity style={styles.seeAllButton} onPress={handleSeeAllPress}>
+              <Text style={styles.seeAllText}>See All</Text>
+              <AntDesign name="right" size={24} color={colors.tint} />
+            </TouchableOpacity>
+          ) : null
+        }
       />
     </View>
   );
@@ -68,7 +87,7 @@ export default BookmarksDashboard;
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "#dfe4e0",
+    backgroundColor: '#dfe4e0',
     paddingHorizontal: 16,
     paddingTop: 20,
   },
