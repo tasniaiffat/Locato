@@ -7,4 +7,11 @@ const api = axios.create({
   },
 });
 
+export const mlAPI = axios.create({
+  baseURL: "http://192.168.0.127:8000",
+  headers: {
+    "Content-Type": "application/json",
+  },
+});
+
 export default api;

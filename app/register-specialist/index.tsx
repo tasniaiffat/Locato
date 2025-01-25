@@ -22,9 +22,9 @@ const SpecialistSignUp = () => {
             <View style={style.signupcta}>
               <MyText textLabel="Already have an account? " textColor="white" fontWeight="normal" />
               <MyLink
-                textLabel="Login"
+                textLabel="Login as Specialist"
                 textColor="white"
-                onPress={() => router.push("/login")}
+                onPress={() => router.push("/login-specialist")}
               />
             </View>
           </ScrollView>

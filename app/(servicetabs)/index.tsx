@@ -22,7 +22,7 @@ const Dashboard = () => {
       }
       const response = await api.get(`/sp/${userId}`);
       setSpecialistData(response.data);
-      const addressResponse = await axios.get(`${process.env.EXPO_PUBLIC_LOCATIONIQ_URL}/reverse?key=${process.env.EXPO_PUBLIC_LOCATIONIQ_API_KEY}&lat=${location?.coords.latitude}&lon=${location?.coords.longitude}&format=json&`);
+      const addressResponse = await axios.get(`${process.env.EXPO_PUBLIC_LOCATIONIQ_URL}/reverse?key=${process.env.EXPO_PUBLIC_LOCATIONIQ_API_KEY}&lat=${specialistData?.locationLatitude}&lon=${specialistData?.locationLongitude}&format=json&`);
       console.log("Address", addressResponse.data.display_name);
     
       setAddress(addressResponse.data.display_name);
