@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, StyleSheet, Button, Alert } from 'react-native';
+import { View, Text, TextInput, StyleSheet, TouchableOpacity, Text as RNText, Alert } from 'react-native';
 import api from '@/services/api';
+import { grey } from '@/constants/Colors';
 
 const ContractForm: React.FC = () => {
   const [serviceRequestId, setServiceRequestId] = useState<string>('');
@@ -27,7 +28,6 @@ const ContractForm: React.FC = () => {
     } catch (error) {
       console.error('Error during contract submission:', error); // Handle error
     }
-  
   };
 
   return (
@@ -66,7 +66,9 @@ const ContractForm: React.FC = () => {
         multiline
       />
 
-      <Button title="Submit Contract" onPress={handleSubmit} />
+      <TouchableOpacity style={styles.button} onPress={handleSubmit}>
+        <RNText style={styles.buttonText}>Send Contract</RNText>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -76,6 +78,7 @@ export default ContractForm;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    justifyContent: 'center',
     padding: 20,
     backgroundColor: '#f4f4f4',
   },
@@ -96,5 +99,18 @@ const styles = StyleSheet.create({
   textArea: {
     height: 100,
     textAlignVertical: 'top',
+  },
+  button: {
+    backgroundColor: grey,
+    paddingVertical: 12,
+    borderRadius: 8,
+    marginTop: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  buttonText: {
+    color: '#fff', // White text color
+    fontSize: 16,
+    fontWeight: 'bold',
   },
 });
