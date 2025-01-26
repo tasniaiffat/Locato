@@ -1,99 +1,157 @@
-import React, { useEffect, useState } from "react"
-import { View, Text, TouchableOpacity, StyleSheet, Alert, SafeAreaView, ScrollView } from "react-native"
-import { router, useLocalSearchParams } from "expo-router"
-import { Ionicons } from "@expo/vector-icons"
-import api from "@/services/api"
-import type { ServiceRequestType } from "@/types/ServiceRequestType"
-import { colors } from "@/constants/Colors"
-import { UserType } from "@/types/UserType"
-import axios from "axios"
+import React, { useEffect, useState } from "react";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  Alert,
+  SafeAreaView,
+  ScrollView,
+  ActivityIndicator,
+} from "react-native";
+import { router, useLocalSearchParams } from "expo-router";
+import { Ionicons } from "@expo/vector-icons";
+import api from "@/services/api";
+import type { ServiceRequestType } from "@/types/ServiceRequestType";
+import { colors } from "@/constants/Colors";
+import { UserType } from "@/types/UserType";
+import axios from "axios";
+import * as SecureStore from "expo-secure-store";
 
 const IncomingRequest = () => {
-  const [serviceRequest, setServiceRequest] = useState<ServiceRequestType | null>(null)
-  const { data } = useLocalSearchParams();
-  const [user, setUser] = useState<UserType|null>(null);
+  const [serviceRequest, setServiceRequest] = useState<ServiceRequestType | null>(null);
+  const [user, setUser] = useState<UserType | null>(null);
   const [address, setAddress] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(true);
+  const { data } = useLocalSearchParams();
 
   useEffect(() => {
-    try {
-      const parsedData = JSON.parse(data as string)
-      console.log("Parsed Data", parsedData);
+    const loadData = async () => {
+      console.log("Data", data);
       
-      setServiceRequest(parsedData);
-      const serviceRequestId = parsedData?.serviceRequestId;
-      if (!serviceRequestId) {
-        console.log("No service request id found");
-        return;
-        
-      };
-      fetchUser(serviceRequestId);
-    } catch (error) {
-      console.log("error", error)
-    }
-  }, [data]);
+      try {
+        if (!data) {
+          console.log("No data passed in route parameters");
+          setLoading(false);
+          return;
+        }
+        const parsedData = JSON.parse(data as string);
+        console.log("Parsed Data", parsedData);
 
+        setServiceRequest(parsedData);
+        const serviceRequestId = parsedData?.serviceRequestId;
+        if (!serviceRequestId) {
+          console.log("No service request ID found");
+          setLoading(false);
+
+        }
+        await fetchUser(serviceRequestId);
+      } catch (error) {
+        console.error("Error parsing or loading data:", error);
+        setLoading(false);
+      }
+    };
+
+    loadData();
+  }, []);
 
   const fetchUser = async (serviceRequestId: string) => {
-    const response = await api.get(`/service_request/${serviceRequestId}`);
-    console.log("User", response.data.user);
-    
-    getCoordinateFromAddress(response.data?.user?.locationLatitude, response.data?.user?.locationLongitude);
-    setUser(response.data.user);
-  
-  }
-  const getCoordinateFromAddress = async (latitude: number, longitude: number) => {
-    console.log("Getting address from coordinates", latitude, longitude);
-    
-    const response = await axios.get(`${process.env.EXPO_PUBLIC_LOCATIONIQ_URL}/reverse?key=${process.env.EXPO_PUBLIC_LOCATIONIQ_API_KEY}&lat=${latitude}&lon=${longitude}&format=json&`);
-    console.log("Address", response.data.display_name);
-    
-    setAddress(response.data.display_name);
-  }
+    try {
+      const response = await api.get(`/service_request/${serviceRequestId}`);
+      console.log("User Data", response.data.user);
 
-  useEffect(() =>  {
-    const serviceRequestId = serviceRequest?.serviceRequestId;
-    if (!serviceRequestId) {
-      console.log("No service request id found");
-      return;
-      
-    };
-    fetchUser(serviceRequestId);
+      setUser(response.data.user);
+      const { locationLatitude, locationLongitude } = response.data.user;
+      setAddress("1234 Main St, Springfield, IL 62701");
+      // if (locationLatitude && locationLongitude) {
+      //   await getAddressFromCoordinates(locationLatitude, locationLongitude);
+      // }
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-  },[]);
-
-
-  
+  const getAddressFromCoordinates = async (latitude: number, longitude: number) => {
+    try {
+      console.log("Getting address from coordinates", latitude, longitude);
+      const response = await axios.get(
+        `${process.env.EXPO_PUBLIC_LOCATIONIQ_URL}/reverse`,
+        {
+          params: {
+            key: process.env.EXPO_PUBLIC_LOCATIONIQ_API_KEY,
+            lat: latitude,
+            lon: longitude,
+            format: "json",
+          },
+        }
+      );
+      console.log("Address", response.data.display_name);
+      setAddress(response.data.display_name);
+      // setAddress("1234 Main St, Springfield, IL 62701");
+    } catch (error) {
+      console.error("Error getting address:", error);
+    }
+  };
 
   const acceptRequest = async () => {
     try {
-      const response = await api.patch(`/service_request/go-to-chat?id=${serviceRequest?.serviceRequestId}`)
-      console.log(response.data)
-      Alert.alert("Success", "Request Accepted")
-      router.replace("/(servicetabs)/")
+      const response = await api.patch(
+        `/service_request/go-to-chat?id=${serviceRequest?.serviceRequestId}`
+      );
+      console.log("Request Accepted:", response.data);
+      Alert.alert("Success", "Request Accepted");
+
+      const userId = await SecureStore.getItemAsync("userId");
+      if (!userId) {
+        Alert.alert("Error", "UserId not found");
+        return;
+      }
+      console.log("Other user for specialist chat", serviceRequest?.userEmail);
+      
+      router.replace({
+        pathname: "/chat-specialist",
+        params: {
+          otherUserEmail: serviceRequest?.userEmail,
+          userId,
+        },
+      });
     } catch (error) {
-      Alert.alert("Error", "Failed to accept request")
+      Alert.alert("Error", "Failed to accept request");
+      console.error("Error accepting request:", error);
     }
-  }
+  };
 
   const declineRequest = async () => {
     try {
       const response = await api.patch(`/service_request/status?id=${serviceRequest?.serviceRequestId}`, {
         status: "REJECTED",
-      })
-      console.log(response.data)
-      Alert.alert("Success", "Request Declined")
-      router.replace("/(servicetabs)/")
+      });
+      console.log("Request Declined:", response.data);
+      Alert.alert("Success", "Request Declined");
+      router.replace("/(servicetabs)/");
     } catch (error) {
-      Alert.alert("Error", "Failed to decline request")
+      Alert.alert("Error", "Failed to decline request");
+      console.error("Error declining request:", error);
     }
+  };
+
+  if (loading) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <ActivityIndicator size="large" color={colors.tabIconSelected} style={styles.loadingIndicator} />
+        <Text style={styles.loadingText}>Loading request...</Text>
+      </SafeAreaView>
+    );
   }
 
   if (!serviceRequest) {
     return (
       <SafeAreaView style={styles.container}>
-        <Text style={styles.loadingText}>Loading request...</Text>
+        <Text style={styles.errorText}>No service request data available.</Text>
       </SafeAreaView>
-    )
+    );
   }
 
   return (
@@ -102,41 +160,19 @@ const IncomingRequest = () => {
         <Text style={styles.title}>Incoming Request</Text>
 
         <View style={styles.card}>
+          {/* Service Request Details */}
           <View style={styles.infoRow}>
             <Ionicons name="briefcase-outline" size={24} color={colors.tabIconSelected} />
             <Text style={styles.infoText}>{serviceRequest.jobType}</Text>
           </View>
-          <View style={styles.infoRow}>
-            <Ionicons name="document-text-outline" size={24} color={colors.tabIconSelected} />
-            <Text style={styles.infoText}>{serviceRequest.jobDescription}</Text>
-          </View>
-          <View style={styles.infoRow}>
-            <Ionicons name="mail-outline" size={24} color={colors.tabIconSelected} />
-            <Text style={styles.infoText}>{serviceRequest.userEmail}</Text>
-          </View>
-          <View style={styles.infoRow}>
-            <Ionicons name="calendar-outline" size={24} color={colors.tabIconSelected} />
-            <Text style={styles.infoText}>{new Date(
-              Date.UTC(
-                serviceRequest.appointmentDataTime[0], // Year
-                serviceRequest.appointmentDataTime[1] - 1, // Month
-                serviceRequest.appointmentDataTime[2], // Day
-                serviceRequest.appointmentDataTime[3], // Hours
-                serviceRequest.appointmentDataTime[4] // Minutes
-              )
-            ).toLocaleString()}
-            </Text>
-          </View>
-          <View style={styles.infoRow}>
-            <Ionicons name="image" size={24} color={colors.tabIconSelected} />
-            <Text style={styles.infoText}>{user?.name || ""}</Text>
-          </View>
+          {/* Other Fields */}
           <View style={styles.infoRow}>
             <Ionicons name="map" size={24} color={colors.tabIconSelected} />
-            <Text style={styles.infoText}>{address || "Address"}</Text>
+            <Text style={styles.infoText}>{address || "No address found"}</Text>
           </View>
         </View>
 
+        {/* Buttons */}
         <View style={styles.buttonContainer}>
           <TouchableOpacity onPress={declineRequest} style={[styles.button, styles.declineButton]}>
             <Ionicons name="close-circle-outline" size={24} color="white" />
@@ -150,8 +186,8 @@ const IncomingRequest = () => {
         </View>
       </ScrollView>
     </SafeAreaView>
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -161,64 +197,55 @@ const styles = StyleSheet.create({
   scrollContent: {
     padding: 20,
   },
+  loadingIndicator: {
+    marginTop: 50,
+  },
   title: {
     fontSize: 24,
     fontWeight: "bold",
     marginBottom: 20,
-    color: colors.tabIconSelected,
     textAlign: "center",
   },
   card: {
-    backgroundColor: "white",
-    borderRadius: 10,
     padding: 20,
-    marginBottom: 20,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
+    borderRadius: 10,
+    backgroundColor: "#fff",
   },
   infoRow: {
     flexDirection: "row",
-    alignItems: "center",
-    marginBottom: 15,
+    marginBottom: 10,
   },
   infoText: {
-    fontSize: 16,
     marginLeft: 10,
-    flex: 1,
+    fontSize: 16,
   },
   buttonContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
   },
   button: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
     padding: 15,
     borderRadius: 10,
-    flex: 0.48,
-  },
-  acceptButton: {
-    backgroundColor: colors.tabIconSelected,
   },
   declineButton: {
-    backgroundColor: colors.errorText,
+    backgroundColor: "red",
+  },
+  acceptButton: {
+    backgroundColor: "green",
+  },
+  errorText: {
+    marginTop: 50,
+    textAlign: "center",
+  },
+  loadingText: {
+    marginTop: 10,
+    textAlign: "center",
+
   },
   buttonText: {
     color: "white",
-    fontSize: 18,
-    fontWeight: "bold",
-    marginLeft: 5,
-  },
-  loadingText: {
-    fontSize: 18,
-    textAlign: "center",
-    marginTop: 50,
-  },
-})
+    marginLeft: 10,
+  }
+});
 
-export default IncomingRequest
-
+export default IncomingRequest;

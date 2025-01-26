@@ -31,30 +31,24 @@ interface ChatScreenProps {
   };
 }
 
-const UserChatScreen: React.FC<ChatScreenProps> = () => {
-  
-  const { data } = useLocalSearchParams();
+const SpecialistChatScreen: React.FC<ChatScreenProps> = ({ route }) => {
+  const { otherUserEmail, userId } = useLocalSearchParams();
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputMessage, setInputMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [otherUserEmail, setOtherUserEmail] = useState<string>("");
-  const [requesterEmail, setRequesterEmail] = useState<string>("");
-  
 
   const flatListRef = useRef<FlatList>(null);
-
-  useEffect(()=>{
-    const parsedData = JSON.parse(data as string);
-    console.log("Parsed Data", parsedData);
-    setOtherUserEmail(parsedData?.otherUserEmail);
-    setRequesterEmail(parsedData?.requesterEmail);
-      
-  },[]);
 
   // Fetch Chat History
   useEffect(() => {
     const fetchMessages = async () => {
       try {
+        console.log("Data from user", otherUserEmail, userId);
+        
+        const response1 = await api.get(`/users/${userId}`);
+        console.log("User Data", response1.data);
+        const requesterEmail = response1.data.email;
+        
 
         setIsLoading(true);
         // Use the imported API service to make the POST request
@@ -224,4 +218,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default UserChatScreen;
+export default SpecialistChatScreen;
