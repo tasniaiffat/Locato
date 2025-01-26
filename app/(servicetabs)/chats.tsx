@@ -46,10 +46,16 @@ const RecentChats = () => {
 
       const otherUserEmail = otherUser.email;
 
+      const userId = await SecureStore.getItemAsync('userId');
+      if (!userId) {
+        Alert.alert('Error', 'Authentication token not found.');
+        
+      }
+
       // Navigate to Chat screen and pass otherUserEmail and userId as query params
       router.push({
-        pathname: '/chat-user',
-        params: { otherUserEmail },
+        pathname: '/chat-specialist',
+        params: { otherUserEmail, userId },
       });
     };
 
