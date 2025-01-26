@@ -69,7 +69,7 @@ const IncomingRequest = () => {
       const response = await api.patch(`/service_request/go-to-chat?id=${serviceRequest?.serviceRequestId}`)
       console.log(response.data)
       Alert.alert("Success", "Request Accepted")
-      router.replace("/(servicetabs)/")
+      router.replace("/contract")
     } catch (error) {
       Alert.alert("Error", "Failed to accept request")
     }

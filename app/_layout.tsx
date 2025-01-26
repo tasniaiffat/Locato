@@ -86,6 +86,8 @@ const RootLayout = () =>{
 
   const fetchPublishableKey = async () => {
     const key = await fetchKey();
+    console.log("Key", key);
+    
     setPublishableKey(key);
   }
 

@@ -33,7 +33,7 @@ const submitAssistanceRequest = async (
       return;
     }
     const uri = encodeURI(
-      `/sp/SpecialistRadius?givenText=${data}&userId=${userId}&latitude=${latitude}&longitude=${longitude}&count=5&page=0&size=10`
+      `/sp/SpecialistRadius?givenText=${data}&userId=${userId}&latitude=${latitude}&longitude=${longitude}&count=10&page=0&size=10`
     );
 
     const response = await api.get(uri);
@@ -69,40 +69,7 @@ const MapPage = () => {
   // console.log("Query: ", query);
 
   const [specialists, setSpecialists] = useState<SpecialistType[]>([
-    {
-      active: true,
-      certifications: "string",
-      createdAt: "2024-11-21T19:55:41.279824",
-      email: "miraj@gmail.com",
-      experienceYears: 0,
-      id: 25,
-      locationLatitude: 23.765844,
-      locationLongitude: 90.35836,
-      name: "Miraj",
-      rating: 3,
-      role: SpecialistRole.ROLE_SERVICE_PROVIDER,
-      serviceRate: 0,
-      specialties: [],
-      updatedAt: "2024-11-21T19:55:41.279824",
-      zone: { createdAt: null, id: 1, title: "Dhaka", updatedAt: null },
-    },
-    {
-      active: true,
-      certifications: "string",
-      createdAt: "2024-11-21T19:55:41.279824",
-      email: "tahsinj@gmail.com",
-      experienceYears: 0,
-      id: 25,
-      locationLatitude: 23.763844,
-      locationLongitude: 90.35936,
-      name: "Tahsin",
-      rating: 4,
-      role: SpecialistRole.ROLE_SERVICE_PROVIDER,
-      serviceRate: 0,
-      specialties: [],
-      updatedAt: "2024-11-21T19:55:41.279824",
-      zone: { createdAt: null, id: 1, title: "Dhaka", updatedAt: null },
-    },
+    
   ]);
   const { selectedSpecialist, setSelectedSpecialist } = useSelectedSpecialist();
 

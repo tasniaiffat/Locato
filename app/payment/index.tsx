@@ -14,11 +14,15 @@ const Payment = () => {
   const [payableAmount, setPayableAmount] = useState(600);
 
   const fetchPaymentSheetParams = async () => {
+    console.log('Fetching Payment Sheet Params');
+    
     const response = await api.post('/create-payment-intent', {
       amount: payableAmount,
     });
-  
+    
     const { paymentIntent, ephemeralKey, customer } = response.data;
+    console.log('Payment Sheet Params:', paymentIntent, ephemeralKey, customer);
+    
   
     return {
       paymentIntent,
@@ -34,6 +38,8 @@ const Payment = () => {
       ephemeralKey,
       customer,
     } = await fetchPaymentSheetParams();
+    console.log('Payment Sheet Params:', paymentIntent, ephemeralKey, customer);
+    
 
     const { error } = await initPaymentSheet({
       merchantDisplayName: 'Locato',
@@ -73,7 +79,7 @@ const Payment = () => {
     <View>
       <TouchableOpacity
         onPress={async () => {
-          // console.log("Payment Sheet");
+          console.log("Payment Sheet");
           await initializePaymentSheet().then(async () => {
             await openPaymentSheet();
           })

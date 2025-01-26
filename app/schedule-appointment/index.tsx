@@ -83,6 +83,7 @@ const ScheduleAppointment = () => {
         `Selected Time: ${to12HourFormat(data.datetime)}\nAdditional Details: ${data.details || "None"}`
       );
       router.push('payment');
+      // router.push('contract');
     } catch (error) {
       console.error(error);
     }
