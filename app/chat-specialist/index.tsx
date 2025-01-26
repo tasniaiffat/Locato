@@ -43,7 +43,7 @@ const SpecialistChatScreen: React.FC<ChatScreenProps> = ({ route }) => {
   useEffect(() => {
     const fetchMessages = async () => {
       try {
-        console.log("Data from user", otherUserEmail, userId);
+        console.log("Data from specialist", otherUserEmail, userId);
         
         const response1 = await api.get(`/users/${userId}`);
         console.log("User Data", response1.data);
@@ -78,7 +78,10 @@ const SpecialistChatScreen: React.FC<ChatScreenProps> = ({ route }) => {
       }
     };
 
-    fetchMessages();
+    setInterval(() => {
+      fetchMessages();
+    },5000);
+    
   }, [otherUserEmail]);
 
   const sendMessage = async () => {
@@ -138,7 +141,7 @@ const SpecialistChatScreen: React.FC<ChatScreenProps> = ({ route }) => {
         style={styles.container}
       >
         {isLoading ? (
-          <Text>Loading...</Text>
+          <Text style={{height:"100%"}}>Loading...</Text>
         ) : (
           <FlatList
             ref={flatListRef}
